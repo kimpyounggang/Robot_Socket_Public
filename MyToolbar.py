@@ -34,14 +34,15 @@ class MainToolbar():
         pass
     def RunWay_def(self):
         obj = pendant.Main.canvas.axes
-        point = pendant.Main.point_list
-        for i in range(len(pendant.Main.point_list)-1):    
-            x = numpy.linspace(point[i][0], point[i+1][0],10)
-            y = numpy.linspace(point[i][1], point[i+1][1],10)
-            z = numpy.linspace(point[i][2], point[i+1][2],10)
-            obj.plot(x,y,z)
-                # obj.plot3D(pendant.Main.point_list[][0])
-        pendant.Main.canvas.draw()
+        if hasattr(pendant.Main, 'point_list'):
+            point = pendant.Main.point_list
+            for i in range(len(pendant.Main.point_list)-1):    
+                x = numpy.linspace(point[i][0], point[i+1][0],10)
+                y = numpy.linspace(point[i][1], point[i+1][1],10)
+                z = numpy.linspace(point[i][2], point[i+1][2],10)
+                obj.plot(x,y,z)
+                    # obj.plot3D(pendant.Main.point_list[][0])
+            pendant.Main.canvas.draw()
         
     def WaySetting_def(self):
         pass    
