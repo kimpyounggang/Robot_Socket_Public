@@ -55,11 +55,20 @@ class Main(QtWidgets.QMainWindow):
     def defined(self):
         Main.widgets = QtWidgets.QWidget()
         Main.canvas = gl.GLViewWidget()
-        # Main.axes.opts['distance'] = 2000
+        Main.canvas.opts['distance'] = 2000
         Main.canvas.setWindowTitle('Title')
-
-        _grid = gl.GLGridItem(size=QtGui.QVector3D(2000,2000,2000))
-        Main.canvas.addItem(_grid)
+        # gx = gl.GLGridItem(size=QtGui.QVector3D(20000,20000,1))
+        # # gx.rotate(90, 0, 1, 0)
+        # # gx.translate(-10, 0, 10)
+        # Main.canvas.addItem(gx)
+        # gy = gl.GLGridItem(size=QtGui.QVector3D(2000,2000,1))
+        # gy.rotate(90, 1, 0, 0)
+        # gy.translate(0, -10, 10)
+        # Main.canvas.addItem(gy)
+        # gz = gl.GLGridItem(size=QtGui.QVector3D(2000,2000,1))
+        # gz.translate(0, 0, 0)
+        # Main.canvas.addItem(gz)
+# size=QtGui.QVector3D(2000,2000,2000)
         
 
         Main.public_int('robot_now_row_director','remote_now_dir','camera_axis_x','camera_axis_y','camera_axis_z')
