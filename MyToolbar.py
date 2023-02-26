@@ -50,9 +50,9 @@ class MainToolbar():
     def Create_def(self):
         pass
     def Load_def(self):
-        pendant.Main.canvas.axes.cla()
-        pendant.Main.canvas.draw()
-        pendant.Main.Right_listwidget.clear()
+        # pendant.Main.canvas.axes.cla()
+        # pendant.Main.canvas.draw()
+        # pendant.Main.Right_listwidget.clear()
         file = QtWidgets.QFileDialog.getOpenFileName()
         if file[0] == '':
             pass
