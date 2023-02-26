@@ -2,22 +2,28 @@ import sys,os,math
 from PyQt5 import QtWidgets,QtGui,QtCore
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
+# from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
 import Mymenubar,MyLeftwidget,MyToolbar,MyVisual
 from MyLog import cTime
 from Mypath import init
 from Myglobal import cGlobal
+import pyqtgraph.opengl as gl
 
-class MplCanvas(FigureCanvasQTAgg):
-    def __init__(self):
-        fig = plt.Figure()
-        self.axes = fig.add_subplot(111, projection='3d')
-        # self.axes.axis([-150, 150, -150, 150])
-        # self.axes.grid()   
-        super(MplCanvas, self).__init__(fig)
 
+# class MplCanvas():
+#     def __init__(self,):
+#         Main.axes = gl.GLViewWidget()
+#         Main.axes.opts['distance'] = 2000
+#         Main.axes.setWindowTitle('Title')
+
+#         _grid = gl.GLGridItem()
+#         Main.axes.addItem(_grid)
+        
+#         # self.axes.axis([-150, 150, -150, 150])
+#         # self.axes.grid()   
+#         # super(MplCanvas, self).__init__()
 
 class Main(QtWidgets.QMainWindow):
     def __init__(self):
@@ -37,10 +43,10 @@ class Main(QtWidgets.QMainWindow):
         self.addToolBar(QtCore.Qt.LeftToolBarArea, Main.LeftToolBar)
         
         ####### 중앙 위젯
-        Main.VisualToolbar = QtWidgets.QToolBar("Visual Proc",self)
-        Main.toolbar = NavigationToolbar(Main.canvas, self)
-        MyVisual.Visualize(Main.canvas,Main.widgets,cGlobal.get_Fontsizes,Main.VisualToolbar,Main.toolbar,Main.judge_con)
-        self.setCentralWidget(Main.VisualToolbar) # 이전 -> self.setCentralWidget(Main.widgets)
+        # Main.VisualToolbar = QtWidgets.QToolBar("Visual Proc",self)
+        # Main.toolbar = NavigationToolbar(Main.canvas, self)
+        MyVisual.Visualize(Main.canvas,Main.widgets,cGlobal.get_Fontsizes,Main.judge_con)
+        self.setCentralWidget(Main.canvas) # 이전 -> self.setCentralWidget(Main.widgets)
         
         
         ####### 스레드 시작(소켓)
@@ -48,7 +54,14 @@ class Main(QtWidgets.QMainWindow):
     
     def defined(self):
         Main.widgets = QtWidgets.QWidget()
-        Main.canvas = MplCanvas()
+        Main.canvas = gl.GLViewWidget()
+        # Main.axes.opts['distance'] = 2000
+        Main.canvas.setWindowTitle('Title')
+
+        _grid = gl.GLGridItem(size=QtGui.QVector3D(2000,2000,2000))
+        Main.canvas.addItem(_grid)
+        
+
         Main.public_int('robot_now_row_director','remote_now_dir','camera_axis_x','camera_axis_y','camera_axis_z')
         Main.public_list('robot_nowrow','robot_list','base_list','remote_now_row','axes_list')
         Main.setWindowTitle(self, '로봇 조작 프로그램')
@@ -177,8 +190,8 @@ class Main(QtWidgets.QMainWindow):
         Main.wid = QtWidgets.QGroupBox()
         Main.wcontrol = QtWidgets.QGroupBox()
         MyVisual.Visualize.set_vislayout(Main)
-        Main.VisualToolbar.addWidget(Main.wid)
-        Main.VisualToolbar.addWidget(Main.wcontrol)
+        # Main.VisualToolbar.addWidget(Main.wid)
+        # Main.VisualToolbar.addWidget(Main.wcontrol)
  
         
     
