@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 from MyLog import cTime
 from Mypath import init
+import pendant
 
 class cGlobal():
     def __init__(self):
@@ -20,6 +21,16 @@ class cGlobal():
         config['System'] = {}
         config['System']['host'] = host
         config['System']['port'] = port
+        config['System']['fontsizes'] = str(cGlobal.get_Fontsizes(self))
+        config['System']['resizes'] = str(cGlobal.get_Resizes(self))
+        with open('System.ini', 'w') as configfile:
+            config.write(configfile)
+            
+    def Set_SafetyZone(self,x,y,z):
+        config = ConfigParser()
+        config['System'] = {}
+        config['System']['host'] = str(cGlobal.get_HostPort(self)[0])
+        config['System']['port'] = str(cGlobal.get_HostPort(self)[1])
         config['System']['fontsizes'] = str(cGlobal.get_Fontsizes(self))
         config['System']['resizes'] = str(cGlobal.get_Resizes(self))
         with open('System.ini', 'w') as configfile:
@@ -76,5 +87,7 @@ class cGlobal():
         
     
 if __name__=='__main__':
-    
-    cGlobal()
+    app =  pendant.QtWidgets.QApplication(pendant.sys.argv)
+    main = pendant.Main()
+    main.show()
+    pendant.sys.exit(app.exec_())

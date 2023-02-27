@@ -15,7 +15,7 @@ class MainToolbar():
         pendant.Main.rule_icon = rule
         pendant.Main.toolbarareas = area
         
-        pendant.Main.add_toolbar(self,'Connect','Create','Load','AutoPoints', 'StepBack','Pause','Run','StepGo','RunWay' ,'WaySetting', 'CycleTime',toolbarname='MenuProc',rule='undertext',area='top')
+        pendant.Main.add_toolbar(self,'Connect','Create','Load','AutoPoints', 'StepBack','Pause','Run','StepGo','RunWay' ,'WaySetting', 'CycleTime', 'SafetyZone', toolbarname='MenuProc',rule='undertext',area='top')
         
         pendant.Main.Right_listwidget = QtWidgets.QListWidget()
         pendant.Main.add_toolbar(self,pendant.Main.Right_listwidget,toolbarname='TeachingList',area='right')
@@ -28,7 +28,17 @@ class MainToolbar():
                           Sector='MyToolbar.OtherToolbar.Connect_def',
                           Contents ='Host / Port Edit Init',
                           SavePath=init())
-        insert_host_port()
+        
+        if hasattr(pendant.Main,'Bool_Connect')==False:
+            setattr(pendant.Main,'Bool_Connect',0)
+            insert_host_port().exec_()
+        else:
+            if getattr(pendant.Main,'Bool_Connect')==0:
+                insert_host_port().show()
+            else:
+                insert_host_port().exec_()
+                setattr(pendant.Main,'Bool_Connect',1)
+            
     
     def AutoPoints_def(self):
         pass
@@ -72,18 +82,18 @@ class MainToolbar():
     
     def CycleTime_def(self):
         pass
+    
+    def SafetyZone_def(self):
+        pass
 
-class insert_host_port(QtCore.QObject):
+class insert_host_port(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
-        
-        existing_dialog =  QtCore.QObject.findChild(self.edit1)
-        if existing_dialog is not None:
-            self.setupui()
-            self.show()
-        else: 
-            self.show()
-        
+        self.setupui()
+        self.show()
+    
+    def __delattr__(self):
+        setattr(pendant.Main,'Bool_Connect',0)
         
     def setupui(self):
         host,port = cGlobal.get_HostPort(self)
@@ -116,5 +126,8 @@ class insert_host_port(QtCore.QObject):
         
 
             
-if __name__=="__main__":
-    MainToolbar()
+if __name__=='__main__':
+    app =  pendant.QtWidgets.QApplication(pendant.sys.argv)
+    main = pendant.Main()
+    main.show()
+    pendant.sys.exit(app.exec_())

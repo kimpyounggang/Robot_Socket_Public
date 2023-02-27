@@ -145,3 +145,8 @@ class GraphUpdater(QtCore.QThread):
                 cTime(Mode=w,Sector=s,Contents ='Pos Load Failed', SavePath=init())
             QtCore.QThread.sleep(1)
                 
+if __name__=='__main__':
+    app =  pendant.QtWidgets.QApplication(pendant.sys.argv)
+    main = pendant.Main()
+    main.show()
+    pendant.sys.exit(app.exec_())

@@ -53,13 +53,9 @@ class Main(QtWidgets.QMainWindow):
     def defined(self):
         Main.widgets = QtWidgets.QWidget()
         Main.canvas = gl.GLViewWidget()
-        
-        
-        
         self.canvas_grid()
         
         # self.Lab_Mesh()
-        
         # Main.canvas.addItem(ygrid)
         # Main.canvas.addItem(zgrid)
         # Main.canvas.show()
@@ -313,7 +309,7 @@ class Main(QtWidgets.QMainWindow):
         Main.canvas.addItem(zgrid)
         
         ### safety
-        Main.safety_quad = gl.GLBoxItem(color = (0,255,0,80))
+        Main.safety_quad = gl.GLBoxItem(color = (0,255,0,120))
         Main.safety_quad.setSize(4000, 4000, 3000)
         Main.canvas.addItem(Main.safety_quad)
         Main.safety_quad.translate(0,-2000,0)

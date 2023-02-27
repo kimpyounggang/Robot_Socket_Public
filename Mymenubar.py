@@ -51,3 +51,9 @@ def Help_Save_def():
     pass
 def Help_Quit_def():
     pass
+
+if __name__=='__main__':
+    app =  pendant.QtWidgets.QApplication(pendant.sys.argv)
+    main = pendant.Main()
+    main.show()
+    pendant.sys.exit(app.exec_())

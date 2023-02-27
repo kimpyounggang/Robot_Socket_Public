@@ -13,8 +13,6 @@ class Visualize():
         Visualize.Widget(self)
 
     def Widget(self):
-        
-
         pendant.Main.Hslider = pendant.QtWidgets.QSlider(pendant.QtCore.Qt.Horizontal)
         pendant.Main.Hslider.setRange(-180,180)
         pendant.Main.Hslider.valueChanged.connect(Visualize.slider_set)
@@ -133,4 +131,7 @@ class Visualize():
                         'point_axis_quaternion','point_axis_euler','tcpcon_list')
     
 if __name__=='__main__':
-    Visualize()
+    app =  pendant.QtWidgets.QApplication(pendant.sys.argv)
+    main = pendant.Main()
+    main.show()
+    pendant.sys.exit(app.exec_())
