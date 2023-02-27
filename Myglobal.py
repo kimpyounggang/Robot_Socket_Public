@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 from MyLog import cTime
 from Mypath import init
+import pendant
 
 class cGlobal():
     def __init__(self):
@@ -8,18 +9,30 @@ class cGlobal():
     def Initailize_System(self):
         config = ConfigParser()
         config['System'] = {}
-        config['System']['Host'] = '127.0.0.1'
-        config['System']['Port'] = '8080'
-        config['System']['Fontsizes'] = '6'
-        config['System']['Resizes'] = '1'
+        config['System']['host'] = '127.0.0.1'
+        config['System']['port'] = '8080'
+        config['System']['fontsizes'] = '6'
+        config['System']['resizes'] = '1'
         with open('System.ini', 'w') as configfile:
             config.write(configfile)
     
     def Set_HostPort(self,host,port):
         config = ConfigParser()
         config['System'] = {}
-        config['System']['Host'] = host
-        config['System']['Port'] = port
+        config['System']['host'] = host
+        config['System']['port'] = port
+        config['System']['fontsizes'] = str(cGlobal.get_Fontsizes(self))
+        config['System']['resizes'] = str(cGlobal.get_Resizes(self))
+        with open('System.ini', 'w') as configfile:
+            config.write(configfile)
+            
+    def Set_SafetyZone(self,x,y,z):
+        config = ConfigParser()
+        config['System'] = {}
+        config['System']['host'] = str(cGlobal.get_HostPort(self)[0])
+        config['System']['port'] = str(cGlobal.get_HostPort(self)[1])
+        config['System']['fontsizes'] = str(cGlobal.get_Fontsizes(self))
+        config['System']['resizes'] = str(cGlobal.get_Resizes(self))
         with open('System.ini', 'w') as configfile:
             config.write(configfile)
     
@@ -29,8 +42,8 @@ class cGlobal():
             config = ConfigParser()
             config.read('System.ini',encoding='utf-8')
             config.sections()
-            h = config['System']['Host']
-            p = config['System']['Port']
+            h = config['System']['host']
+            p = config['System']['port']
             return h,p
         except:
             cTime(Mode='Log_Write',
@@ -46,7 +59,7 @@ class cGlobal():
             config = ConfigParser()
             config.read('System.ini',encoding='utf-8')
             config.sections()
-            f = config['System']['Fontsizes']
+            f = config['System']['fontsizes']
             return int(f)
         except:
             cTime(Mode='Log_Write',
@@ -62,7 +75,7 @@ class cGlobal():
             config = ConfigParser()
             config.read('System.ini',encoding='utf-8')
             config.sections()
-            r = config['System']['Resizes']
+            r = config['System']['resizes']
             return float(r)
         except:
             cTime(Mode='Log_Write',
@@ -74,5 +87,7 @@ class cGlobal():
         
     
 if __name__=='__main__':
-    
-    cGlobal()
+    app =  pendant.QtWidgets.QApplication(pendant.sys.argv)
+    main = pendant.Main()
+    main.show()
+    pendant.sys.exit(app.exec_())

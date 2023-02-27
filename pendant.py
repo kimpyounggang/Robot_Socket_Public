@@ -1,11 +1,8 @@
-import sys,os,math
+import sys,os,math,numpy
 from PyQt5 import QtWidgets,QtGui,QtCore
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-# from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
-
-import Mymenubar,MyLeftwidget,MyToolbar,MyVisual
+import numpy
+from stl import mesh
+import Mymenubar,MyLeftwidget,MyToolbar,MyVisual,MyThread
 from MyLog import cTime
 from Mypath import init
 from Myglobal import cGlobal
@@ -45,21 +42,27 @@ class Main(QtWidgets.QMainWindow):
         ####### 중앙 위젯
         # Main.VisualToolbar = QtWidgets.QToolBar("Visual Proc",self)
         # Main.toolbar = NavigationToolbar(Main.canvas, self)
+        
         MyVisual.Visualize(Main.canvas,Main.widgets,cGlobal.get_Fontsizes,Main.judge_con)
         self.setCentralWidget(Main.canvas) # 이전 -> self.setCentralWidget(Main.widgets)
-        
         
         ####### 스레드 시작(소켓)
         self.socket_thread_start()
     
+    
     def defined(self):
         Main.widgets = QtWidgets.QWidget()
         Main.canvas = gl.GLViewWidget()
-        Main.canvas.opts['distance'] = 2000
-        Main.canvas.setWindowTitle('Title')
-        # gx = gl.GLGridItem(size=QtGui.QVector3D(20000,20000,1))
-        # # gx.rotate(90, 0, 1, 0)
-        # # gx.translate(-10, 0, 10)
+        self.canvas_grid()
+        
+        # self.Lab_Mesh()
+        # Main.canvas.addItem(ygrid)
+        # Main.canvas.addItem(zgrid)
+        # Main.canvas.show()
+        # gx = gl.GLGridItem(size=QtGui.QVector3D(20000,20000,20000))
+        # gx.setSpacing=((100,100,100))
+        # # # gx.rotate(90, 0, 1, 0)
+        # # # gx.translate(-10, 0, 10)
         # Main.canvas.addItem(gx)
         # gy = gl.GLGridItem(size=QtGui.QVector3D(2000,2000,1))
         # gy.rotate(90, 1, 0, 0)
@@ -245,10 +248,20 @@ class Main(QtWidgets.QMainWindow):
                                     "border-color: #d62727")
     
     def socket_thread_start(self):
-        Main.worker = MyToolbar.Worker()
+        Main.worker = MyThread.Worker()
         Main.worker.finished.connect(Main.worker.deleteLater)
         Main.worker.start()
         # Main.worker.WatitThread.connect(self.WaitThread)
+        Main.updater = MyThread.GraphUpdater()
+        Main.updater.data_updated.connect(self.update_data)
+        Main.updater.finished.connect(Main.updater.deleteLater)
+        Main.updater.start()
+    
+    @QtCore.pyqtSlot(numpy.ndarray)
+    def update_data(self, data):
+        Main.scatter.setData(pos=data)
+        Main.quad.resetTransform()
+        Main.quad.translate(data[0][0]-75,data[0][1]-75,data[0][2]-75)
         
     # @pyqtSlot(bool)
     # def WaitThread(self, bools):
@@ -266,8 +279,42 @@ class Main(QtWidgets.QMainWindow):
                               Contents ='Running False',
                               SavePath=init())
         Main.running = False
-        
     
+    def Lab_Mesh(self):
+        stl_mesh = mesh.Mesh.from_file('./icon/probe.stl')
+        points = stl_mesh.points.reshape(-1,3)
+        faces = numpy.arange(points.shape[0]).reshape(-1,3)
+        mesh_data = gl.MeshData(vertexes=points,faces=faces)
+        Main.meshs = gl.GLMeshItem(meshdata=mesh_data,smooth=True,drawFaces=False,drawEdges=True,edgeColor=(0,1,0,1))
+        Main.canvas.addItem(Main.meshs)
+        
+    def canvas_grid(self):
+        Main.canvas.opts['distance'] = 10000
+        Main.canvas.setWindowTitle('Title')
+        Main.scatter = gl.GLScatterPlotItem(color = (255, 0, 0, 255) )
+        Main.quad = gl.GLBoxItem(color = (255,255,255,255))
+        Main.quad.setSize(150, 150, 150)
+        Main.canvas.addItem(Main.quad)
+        Main.canvas.addItem(Main.scatter)
+        
+        ### grid
+        pts1 = numpy.array([[-10000, 0, 0], [10000, 0, 0]])
+        xgrid = gl.GLLinePlotItem(pos=pts1, color=(10, 0.0, 0.0, 1.0), width=3, antialias=True)
+        pts2 = numpy.array([[0, -10000, 0], [0, 10000, 0]])
+        ygrid = gl.GLLinePlotItem(pos=pts2, color=(0, 1.0, 0.0, 1.0), width=3, antialias=True)
+        pts3 = numpy.array([[0, 0, 0], [0, 0, 10000]])
+        zgrid = gl.GLLinePlotItem(pos=pts3, color=(0, 0.0, 1.0, 1.0), width=3, antialias=True)
+        Main.canvas.addItem(xgrid)
+        Main.canvas.addItem(ygrid)
+        Main.canvas.addItem(zgrid)
+        
+        ### safety
+        Main.safety_quad = gl.GLBoxItem(color = (0,255,0,120))
+        Main.safety_quad.setSize(4000, 4000, 3000)
+        Main.canvas.addItem(Main.safety_quad)
+        Main.safety_quad.translate(0,-2000,0)
+        
+        
     
 if __name__=="__main__":
     app =  QtWidgets.QApplication(sys.argv)

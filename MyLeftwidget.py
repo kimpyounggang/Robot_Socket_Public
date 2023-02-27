@@ -1,20 +1,21 @@
 import pendant
+from Myglobal import cGlobal
 from MyLog import cTime
 from Mypath import init
-import numpy as np
-import matplotlib.animation
 
 class left():
-    def __init__(self, canvas, main,fontsize,toolbar,widget,bool):
-        left.Widget(self, canvas,main,fontsize,toolbar,widget,bool)
-
-    def Widget(self, canvas, main,fontsize,toolbar,widget,bool):
+    def __init__(self, canvas,main,fontsize,toolbar,widget,bool):
         pendant.Main.canvas = canvas
         pendant.Main.widgets = main
         pendant.Main.fontsizes = fontsize
         pendant.Main.LeftToolBar = toolbar
         pendant.Main.widget_kinds = widget
         pendant.Main.judge_con = bool
+        left.Widget(self)
+        
+
+    def Widget(self):
+        
         pendant.Main.set_layout(pendant.Main,
                             layout1="QVBoxLayout",layout1_1="QHBoxLayout",layout1_2="QHBoxLayout",layout1_3="QHBoxLayout",
                             layout1_11="QHBoxLayout",layout1_12="QHBoxLayout",layout1_13="QHBoxLayout",
@@ -80,58 +81,12 @@ class left():
     def move_z_def(self):
         pass
     
-    def socket_recv(self):
-        w = 'Log_Write'
-        s = 'MyLeftwidget.Left.socket_recv'
-        # pendant.Main.client_socket = socket_pointer
-        cTime(Mode=w ,Sector=s,Contents='Socket Recv Try',SavePath=init())
-        try:
-            pendant.Main.client_socket.sendall(b"Ready_pos_x")
-            cTime(Mode=w,Sector=s, Contents ='Socket Ready_pos_x',SavePath=init())
-            self.x_pos = pendant.Main.client_socket.recv(1024).decode()
-            cTime(Mode=w,Sector=s,Contents =f'Socket Recv self.x_pos {self.x_pos}',SavePath=init())
-            pendant.Main.robot_pos_x.setText(self.x_pos)
-            
-            pendant.Main.client_socket.sendall(b"Ready_pos_y")
-            cTime(Mode=w,Sector=s, Contents ='Socket Ready_pos_y',SavePath=init())
-            self.y_pos = pendant.Main.client_socket.recv(1024).decode()
-            cTime(Mode=w,Sector=s,Contents =f'Socket Recv self.y_pos {self.y_pos}', SavePath=init())
-            pendant.Main.robot_pos_y.setText(self.y_pos)
-            
-            pendant.Main.client_socket.sendall(b"Ready_pos_z")
-            cTime(Mode=w,Sector=s,Contents ='Socket Ready_pos_z', SavePath=init())
-            self.z_pos = pendant.Main.client_socket.recv(1024).decode()
-            cTime(Mode=w,Sector=s,Contents =f'Socket Recv self.z_pos {self.z_pos}', SavePath=init())
-            pendant.Main.robot_pos_z.setText(self.z_pos)
-            
-            if hasattr(self, 'RobotPos'):
-                cTime(Mode=w,Sector=s,Contents =f'Robot Pos -> exist', SavePath=init())    
-                pendant.Main.x = [float(self.x_pos)]
-                pendant.Main.y = [float(self.y_pos)]
-                pendant.Main.z = [float(self.z_pos)]            
-                self.ani = matplotlib.animation.FuncAnimation(pendant.Main.canvas.axes, left.update,interval=10)
-                self.ani.save('aa.gif',fps=24)
-                pendant.Main.canvas.draw()
-                cTime(Mode=w,Sector=s,Contents =f'Robot Pos -> update', SavePath=init())
-            else:
-                cTime(Mode=w,Sector=s,Contents =f'Robot Pos -> not exist', SavePath=init())
-                self.RobotPos = pendant.Main.canvas.axes.scatter(float(self.x_pos),float(self.y_pos),float(self.z_pos),marker='s',c='red')
-                pendant.Main.x = [float(self.x_pos)]
-                pendant.Main.y = [float(self.y_pos)]
-                pendant.Main.z = [float(self.z_pos)]
-                
-                cTime(Mode=w,Sector=s,Contents =f'Robot Pos -> New draw', SavePath=init())
-            
-            pendant.Main.canvas.draw()
-            pendant.Main.resume(self)
-        except:
-            cTime(Mode=w,Sector=s,Contents ='Socket Recv Failed', SavePath=init())
-            pendant.Main.resume(self)
     
-    def update(self):
-        w = 'Log_Write'
-        s = 'MyLeftwidget.Left.update'
-        cTime(Mode=w,Sector=s,Contents =f'x append {self.x_pos}', SavePath=init())
+    
+    # def update(self):
+    #     w = 'Log_Write'
+    #     s = 'MyLeftwidget.Left.update'
+    #     cTime(Mode=w,Sector=s,Contents =f'x append {self.x_pos}', SavePath=init())
         # left.x.append(self.x_pos)
         # left.y.append(self.y_pos)
         # left.z.append(self.z_pos)
