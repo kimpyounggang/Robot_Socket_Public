@@ -2,17 +2,18 @@ import pendant
 from MyLog import cTime
 from Mypath import init
 from Myglobal import cGlobal
-import matplotlib.pyplot as plt
-class Visualize():
-    def __init__(self, canvas, main,fontsize,toolbar,widget,bool):
-        Visualize.Widget(self, canvas,main,fontsize,toolbar,widget,bool)
+import pyqtgraph.opengl as gl
 
-    def Widget(self, canvas, main,fontsize,toolbar,widget,bool):
-        pendant.Main.canvas = canvas
+class Visualize():
+    def __init__(self, axes, main,fontsize,bool):
+        Visualize.Widget(self, axes,main,fontsize,bool)
+
+    def Widget(self, axes, main,fontsize,bool):
+        pendant.Main.axes = axes
         pendant.Main.widgets = main
         pendant.Main.fontsizes = fontsize
-        pendant.Main.VisualToolbar = toolbar
-        pendant.Main.toolbar  = widget
+        # pendant.Main.VisualToolbar = toolbar
+        # pendant.Main.toolbar  = widget
         pendant.Main.judge_con = bool
 
         pendant.Main.Hslider = pendant.QtWidgets.QSlider(pendant.QtCore.Qt.Horizontal)
@@ -23,8 +24,8 @@ class Visualize():
         pendant.Main.Vslider.valueChanged.connect(Visualize.slider_set)
     
         pendant.Main.set_layout(pendant.Main,vis_layout="QVBoxLayout",vis_tool='QHBoxLayout')
-        pendant.Main.vis_layout.addWidget(pendant.Main.toolbar)
-        pendant.Main.vis_layout.addWidget(pendant.Main.canvas)
+        # pendant.Main.vis_layout.addWidget(pendant.Main.toolbar)
+        # pendant.Main.vis_layout.addWidget(pendant.Main.canvas)
         pendant.Main.vis_layout.addWidget(pendant.Main.Hslider)
         pendant.Main.vis_tool.addWidget(pendant.Main.Vslider)
         
@@ -38,7 +39,7 @@ class Visualize():
         pendant.Main.sets_layout(pendant.Main,'wcontrol','vis_tool')
         
     def slider_set(self):
-        pendant.Main.canvas.axes.view_init(pendant.Main.Vslider.value(),pendant.Main.Hslider.value())
+        pendant.Main.canvas.view_init(pendant.Main.Vslider.value(),pendant.Main.Hslider.value())
         pendant.Main.canvas.draw()
         
     def log_read_line(self,path,read_index):
@@ -51,8 +52,6 @@ class Visualize():
         return read_data
     
     def create_obj(self,path):
-        obj = pendant.Main.canvas.axes
-        
         Visualize._private_val_initail(self)
         save = False
         save1 = False
@@ -102,14 +101,18 @@ class Visualize():
             #     float(self.point_axis_quaternion[i1][0]),float(self.point_axis_quaternion[i1][1]),
             #     float(self.point_axis_quaternion[i1][2]),float(self.point_axis_quaternion[i1][3])))
 
+
         for i1 in range(points_num):
             self.point_list.append([float(self.point_pos[i1][0])/cGlobal.get_Resizes(self),
                                    float(self.point_pos[i1][1])/cGlobal.get_Resizes(self),
                                    float(self.point_pos[i1][2])/cGlobal.get_Resizes(self)])
             
-            obj.scatter(self.point_list[i1][0],self.point_list[i1][1],self.point_list[i1][2],marker='x',c='blue')
+            spl = gl.GLScatterPlotItem(pos = (self.point_list[i1][0],
+                                                           self.point_list[i1][1],
+                                                           self.point_list[i1][2]))
+            pendant.Main.canvas.addItem(spl)
             pendant.Main.Right_listwidget.addItem(f'{self.point_name_proc[i1]}')
-        pendant.Main.canvas.draw()
+  
         
     # def Widget(self):
     #     
