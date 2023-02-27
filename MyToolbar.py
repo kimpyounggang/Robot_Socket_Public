@@ -1,9 +1,11 @@
-import pendant, socket, MyLeftwidget ,numpy
+import pendant,numpy
 from PyQt5 import QtWidgets,QtCore
 from Myglobal import cGlobal
 from Mypath import init
 from MyLog import cTime
 from MyVisual import Visualize
+import pyqtgraph.opengl as gl
+import  socket
 
 class MainToolbar():
     def __init__(self):
@@ -45,14 +47,15 @@ class MainToolbar():
             pendant.Main.canvas.draw()
         
     def WaySetting_def(self):
-        pass    
+        MyRobot_pos = gl.GLScatterPlotItem(pos = numpy.array([[pendant.Main.x,pendant.Main.y,pendant.Main.z]]))
+        pendant.Main.canvas.addItem(MyRobot_pos)  
         
     def Create_def(self):
         pass
     def Load_def(self):
         # pendant.Main.canvas.axes.cla()
-        # pendant.Main.canvas.draw()
-        # pendant.Main.Right_listwidget.clear()
+        pendant.Main.canvas.clear()
+        pendant.Main.Right_listwidget.clear()
         file = QtWidgets.QFileDialog.getOpenFileName()
         if file[0] == '':
             pass
@@ -106,84 +109,7 @@ class insert_host_port(QtWidgets.QDialog):
         cGlobal.Set_HostPort(self,host,port)
         self.close()
         
-class Worker(QtCore.QThread):
-    # WatitThread = QtCore.pyqtSignal(bool)
-    # progress = QtCore.pyqtSignal(int)
-    def __init__(self):
-        super().__init__()
-        cTime(Mode='Log_Write',
-                              Sector='MyToolbar.Worker.__init__',
-                              Contents ='Running True',
-                              SavePath=init())
-        pendant.Main.running = True
-        # self.bools = False
-    def run(self):
-        temp = 0
-        if temp == 0:
-            pendant.Main.robot_connect_status(pendant.Main,False,True)
-        while pendant.Main.running:
-            QtCore.QThread.sleep(1)
-            temp +=1
-            try:
-                if self.socket_check():
-                    cTime(Mode='Log_Write',
-                          Sector='MyToolbar.Worker.socket_try',
-                          Contents ='Socket Still Connect',
-                          SavePath=init())
-                    pendant.Main.robot_connect_status(pendant.Main,True,None)
-                    pendant.Main.pause(self)
-                    MyLeftwidget.left.socket_recv(self)
-                    # self.bools = True
-                    # self.WatitThread.emit(self.bools)
-                else:
-                    cTime(Mode='Log_Write',
-                          Sector='MyToolbar.Worker.socket_try',
-                          Contents ='Socket Coonnect Failed',
-                          SavePath=init())
-                    if self.socket_try():
-                        cTime(Mode='Log_Write',
-                              Sector='MyToolbar.Worker.socket_try',
-                              Contents ='Socket Coonnected',
-                              SavePath=init())
-                        pendant.Main.robot_connect_status(pendant.Main,True,None)
-                    else:
-                        cTime(Mode='Log_Write',
-                              Sector='MyToolbar.Worker.socket_try',
-                              Contents ='Socket Coonnect Failed',
-                              SavePath=init())
-                        pendant.Main.robot_connect_status(pendant.Main,False,None)
-            except:
-                cTime(Mode='Log_Write',
-                      Sector='MyToolbar.Worker.socket_try',
-                      Contents ='Socket Coonnect Failed',
-                      SavePath=init())
-                pendant.Main.robot_connect_status(pendant.Main,False,None)
-                
-    
-    def socket_check(self):
-        try:
-            pendant.Main.client_socket.sendall(b"ping")
-            return True
-        except:
-            return False
-              
-    def socket_try(self):
-        try:
-            host,port = cGlobal.get_HostPort(self)
-            port = int(port)
-            # host = '127.0.0.1'
-            # port = 8080
-            cTime(Mode='Log_Write'
-                  ,Sector='MyToolbar.Worker.socket_try',
-                  Contents ='Socket Coonnect Try',
-                  SavePath=init())
-            pendant.Main.client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-            pendant.Main.client_socket.connect((host,port))
-            return True
-        except:
-            return False
-    
-    
+
             
 if __name__=="__main__":
     MainToolbar()

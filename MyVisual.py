@@ -3,18 +3,17 @@ from MyLog import cTime
 from Mypath import init
 from Myglobal import cGlobal
 import pyqtgraph.opengl as gl
-
+import numpy as np
 class Visualize():
-    def __init__(self, axes, main,fontsize,bool):
-        Visualize.Widget(self, axes,main,fontsize,bool)
-
-    def Widget(self, axes, main,fontsize,bool):
-        pendant.Main.axes = axes
+    def __init__(self, canvas, main,fontsize,bool):
+        pendant.Main.canvas = canvas
         pendant.Main.widgets = main
         pendant.Main.fontsizes = fontsize
-        # pendant.Main.VisualToolbar = toolbar
-        # pendant.Main.toolbar  = widget
         pendant.Main.judge_con = bool
+        Visualize.Widget(self)
+
+    def Widget(self):
+        
 
         pendant.Main.Hslider = pendant.QtWidgets.QSlider(pendant.QtCore.Qt.Horizontal)
         pendant.Main.Hslider.setRange(-180,180)
@@ -25,7 +24,7 @@ class Visualize():
     
         pendant.Main.set_layout(pendant.Main,vis_layout="QVBoxLayout",vis_tool='QHBoxLayout')
         # pendant.Main.vis_layout.addWidget(pendant.Main.toolbar)
-        # pendant.Main.vis_layout.addWidget(pendant.Main.canvas)
+        pendant.Main.vis_layout.addWidget(pendant.Main.canvas)
         pendant.Main.vis_layout.addWidget(pendant.Main.Hslider)
         pendant.Main.vis_tool.addWidget(pendant.Main.Vslider)
         
@@ -39,9 +38,9 @@ class Visualize():
         pendant.Main.sets_layout(pendant.Main,'wcontrol','vis_tool')
         
     def slider_set(self):
-        pendant.Main.canvas.view_init(pendant.Main.Vslider.value(),pendant.Main.Hslider.value())
-        pendant.Main.canvas.draw()
-        
+        # pendant.Main.canvas.axes.view_init(pendant.Main.Vslider.value(),pendant.Main.Hslider.value())
+        # pendant.Main.canvas.draw()
+        pass
     def log_read_line(self,path,read_index):
         read_data = ''
         with open(path,'r') as read_txt:
@@ -101,19 +100,18 @@ class Visualize():
             #     float(self.point_axis_quaternion[i1][0]),float(self.point_axis_quaternion[i1][1]),
             #     float(self.point_axis_quaternion[i1][2]),float(self.point_axis_quaternion[i1][3])))
 
-
         for i1 in range(points_num):
             self.point_list.append([float(self.point_pos[i1][0])/cGlobal.get_Resizes(self),
                                    float(self.point_pos[i1][1])/cGlobal.get_Resizes(self),
                                    float(self.point_pos[i1][2])/cGlobal.get_Resizes(self)])
             
-            spl = gl.GLScatterPlotItem(pos = (self.point_list[i1][0],
-                                                           self.point_list[i1][1],
-                                                           self.point_list[i1][2]))
+            spl = gl.GLScatterPlotItem(pos = np.array([[self.point_list[i1][0],
+                                              self.point_list[i1][1],
+                                              self.point_list[i1][2]]]))
             pendant.Main.canvas.addItem(spl)
             pendant.Main.Right_listwidget.addItem(f'{self.point_name_proc[i1]}')
-  
-        
+            
+    
     # def Widget(self):
     #     
     #     pendant.Main.visual_pos = pendant.QtWidgets.QVBoxLayout()
