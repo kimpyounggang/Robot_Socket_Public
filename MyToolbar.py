@@ -28,9 +28,7 @@ class MainToolbar():
                           Sector='MyToolbar.OtherToolbar.Connect_def',
                           Contents ='Host / Port Edit Init',
                           SavePath=init())
-        if insert_host_port().exec_():
-            pass
-        else: pass
+        insert_host_port()
     
     def AutoPoints_def(self):
         pass
@@ -54,8 +52,9 @@ class MainToolbar():
         pass
     def Load_def(self):
         # pendant.Main.canvas.axes.cla()
-        pendant.Main.canvas.clear()
+        # pendant.Main.canvas.clear()
         pendant.Main.Right_listwidget.clear()
+        # pendant.Main.canvas_grid(self)
         file = QtWidgets.QFileDialog.getOpenFileName()
         if file[0] == '':
             pass
@@ -74,12 +73,17 @@ class MainToolbar():
     def CycleTime_def(self):
         pass
 
-class insert_host_port(QtWidgets.QDialog):
+class insert_host_port(QtCore.QObject):
     def __init__(self):
         super().__init__()
-        self.setupui()
         
-        self.show()
+        existing_dialog =  QtCore.QObject.findChild(self.edit1)
+        if existing_dialog is not None:
+            self.setupui()
+            self.show()
+        else: 
+            self.show()
+        
         
     def setupui(self):
         host,port = cGlobal.get_HostPort(self)
@@ -102,6 +106,7 @@ class insert_host_port(QtWidgets.QDialog):
         layout.addLayout(layout2)
         layout.addWidget(btn)
         self.setLayout(layout)
+        # insert_host_port().exec_()
     
     def btn_def(self):
         host = self.edit1.text()
