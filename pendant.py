@@ -262,7 +262,8 @@ class Main(QtWidgets.QMainWindow):
         Main.scatter.setData(pos=data)
         Main.quad.resetTransform()
         Main.quad.translate(data[0][0]-75,data[0][1]-75,data[0][2]-75)
-        
+        res = numpy.append(data,[[0,0,0]],axis=0)
+        Main.robot.setData(pos=res)
     # @pyqtSlot(bool)
     # def WaitThread(self, bools):
         
@@ -291,11 +292,17 @@ class Main(QtWidgets.QMainWindow):
     def canvas_grid(self):
         Main.canvas.opts['distance'] = 10000
         Main.canvas.setWindowTitle('Title')
+        
         Main.scatter = gl.GLScatterPlotItem(color = (255, 0, 0, 255) )
+        Main.canvas.addItem(Main.scatter)
+        
         Main.quad = gl.GLBoxItem(color = (255,255,255,255))
         Main.quad.setSize(150, 150, 150)
         Main.canvas.addItem(Main.quad)
-        Main.canvas.addItem(Main.scatter)
+        
+        Main.robot_array = numpy.array([[0, 0, 0], [10, 10, 10]])
+        Main.robot = gl.GLLinePlotItem(pos=Main.robot_array, color=(10, 0.0, 0.0, 1.0), width=30, antialias=True)
+        Main.canvas.addItem(Main.robot)
         
         ### grid
         pts1 = numpy.array([[-10000, 0, 0], [10000, 0, 0]])

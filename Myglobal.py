@@ -11,7 +11,7 @@ class cGlobal():
         config['System'] = {}
         config['System']['host'] = '127.0.0.1'
         config['System']['port'] = '8080'
-        config['System']['fontsizes'] = '6'
+        config['System']['fontsizes'] = '5'
         config['System']['resizes'] = '1'
         with open('System.ini', 'w') as configfile:
             config.write(configfile)
