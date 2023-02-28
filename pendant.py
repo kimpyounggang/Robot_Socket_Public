@@ -91,7 +91,7 @@ class Main(QtWidgets.QMainWindow):
         Main.menubars = self.menuBar()
         Main.menubars.setNativeMenuBar(False)
         Main.judge_con = False
-        
+        Main.rmove_que = False
 
     
         
@@ -188,6 +188,10 @@ class Main(QtWidgets.QMainWindow):
         Main.wid6 = QtWidgets.QGroupBox()
         Main.wid7 = QtWidgets.QGroupBox()
         Main.wid8 = QtWidgets.QGroupBox()
+        Main.wid9 = QtWidgets.QGroupBox()
+        Main.wid10 = QtWidgets.QGroupBox()
+        Main.wid11 = QtWidgets.QGroupBox()
+        Main.wid12 = QtWidgets.QGroupBox()
         MyLeftwidget.left.set_leftlayout(Main)
         Main.LeftToolBar.addWidget(Main.wid1)
         Main.LeftToolBar.addWidget(Main.wid2)
@@ -197,6 +201,10 @@ class Main(QtWidgets.QMainWindow):
         Main.LeftToolBar.addWidget(Main.wid6)
         Main.LeftToolBar.addWidget(Main.wid7)
         Main.LeftToolBar.addWidget(Main.wid8)
+        Main.LeftToolBar.addWidget(Main.wid9)
+        Main.LeftToolBar.addWidget(Main.wid10)
+        Main.LeftToolBar.addWidget(Main.wid11)
+        Main.LeftToolBar.addWidget(Main.wid12)
         
     def visual_layout(self):
         Main.wid = QtWidgets.QGroupBox()
@@ -251,11 +259,12 @@ class Main(QtWidgets.QMainWindow):
         Main.worker = MyThread.Worker()
         Main.worker.finished.connect(Main.worker.deleteLater)
         Main.worker.start()
-        # Main.worker.WatitThread.connect(self.WaitThread)
+        
         Main.updater = MyThread.GraphUpdater()
         Main.updater.data_updated.connect(self.update_data)
         Main.updater.finished.connect(Main.updater.deleteLater)
         Main.updater.start()
+    
     
     @QtCore.pyqtSlot(numpy.ndarray)
     def update_data(self, data):

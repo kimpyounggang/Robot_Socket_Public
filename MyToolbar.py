@@ -123,6 +123,7 @@ class insert_host_port(QtWidgets.QDialog):
         port = self.edit2.text()
         cGlobal.Set_HostPort(self,host,port)
         self.close()
+        setattr(pendant.Main,'Bool_Connect',1)
         
 
             

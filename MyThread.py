@@ -9,6 +9,7 @@ import  socket
 from PyQt5 import QtWidgets,QtCore
 
 class Worker(QtCore.QThread):
+    btn_ = False
     # WatitThread = QtCore.pyqtSignal(bool)
     # progress = QtCore.pyqtSignal(int)
     def __init__(self):
@@ -32,6 +33,21 @@ class Worker(QtCore.QThread):
                           Sector='MyToolbar.Worker.socket_try',
                           Contents ='Socket Still Connect',
                           SavePath=init())
+                    print(self.btn_)
+                    if Worker.btn_ == True:
+                        cTime(Mode='Log_Write',
+                              Sector='MyToolbar.Worker.socket_try',
+                              Contents ='rmove_que True',
+                              SavePath=init())
+                        res = 'rx,'+pendant.Main.rline_1.text()+','
+                        pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+                        echo = pendant.Main.client_socket.recv(1024).decode()
+                        if echo==res:
+                            cTime(Mode='Log_Write',
+                                        Sector='MyLeftToolbar.Left.rmove_x_def',
+                                        Contents =f'Socket Send {res}',
+                                        SavePath=init())
+                            
                     pendant.Main.robot_connect_status(pendant.Main,True,None)
                     pendant.Main.pause(self)
                     cTime(Mode='Log_Write',
@@ -53,6 +69,19 @@ class Worker(QtCore.QThread):
                               Contents ='Socket Coonnected',
                               SavePath=init())
                         pendant.Main.robot_connect_status(pendant.Main,True,None)
+                        if Worker.btn_ == True:
+                            cTime(Mode='Log_Write',
+                              Sector='MyToolbar.Worker.socket_try',
+                              Contents ='rmove_que True',
+                              SavePath=init())
+                            res = 'rx,'+pendant.Main.rline_1.text()+','
+                            pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+                            echo = pendant.Main.client_socket.recv(1024).decode()
+                            if echo==res:
+                                cTime(Mode='Log_Write',
+                                        Sector='MyLeftToolbar.Left.rmove_x_def',
+                                        Contents =f'Socket Send {res}',
+                                        SavePath=init())
                     else:
                         cTime(Mode='Log_Write',
                               Sector='MyToolbar.Worker.socket_try',
@@ -67,11 +96,14 @@ class Worker(QtCore.QThread):
                 pendant.Main.robot_connect_status(pendant.Main,False,None)
                 pendant.Main.resume(self)
                 
-    
     def socket_check(self):
         try:
             pendant.Main.client_socket.sendall(b"ping")
-            return True
+            echo = pendant.Main.client_socket.recv(100).decode()
+            if echo=="ping":
+                return True
+            else:
+                return False
         except:
             return False
               
@@ -94,32 +126,38 @@ class Worker(QtCore.QThread):
     def socket_recv(self):
         w = 'Log_Write'
         s = 'MyThread.Worker.socket_recv'
-        # pendant.Main.canvas = pendant.Main.canvas
-        # pendant.Main.client_socket = socket_pointer
         cTime(Mode=w ,Sector=s,Contents='Socket Recv Try',SavePath=init())
         try:
-            pendant.Main.client_socket.sendall(b"Ready_pos_x")
-            cTime(Mode=w,Sector=s, Contents ='Socket Ready_pos_x',SavePath=init())
-            self.x_pos = pendant.Main.client_socket.recv(1024).decode()
-            cTime(Mode=w,Sector=s,Contents =f'Socket Recv self.x_pos {self.x_pos}',SavePath=init())
-            pendant.Main.robot_pos_x.setText(self.x_pos)
+            pos = pendant.Main.client_socket.recv(100).decode()
+            pendant.Main.client_socket.sendall(bytes(pos,encoding='utf-8'))
+            pos = pos.strip('"')
+            poss = pos.split(',')
+            cTime(Mode=w,Sector=s, Contents =f'Socket RECV {pos}',SavePath=init())
+            cTime(Mode=w,Sector=s, Contents =f'Socket RECV {poss}',SavePath=init())
+            if 'x_pos' in str(poss[0]):
+                cTime(Mode=w,Sector=s, Contents =f'Socket RECV {poss[0]}',SavePath=init())
+                self.x_pos = poss[0].replace('x_pos','')
+                cTime(Mode=w,Sector=s,Contents =f'Socket Recv x_pos {self.x_pos}',SavePath=init())
+                pendant.Main.robot_pos_x.setText(self.x_pos)
+                pendant.Main.xs = float(self.x_pos)
             
-            pendant.Main.client_socket.sendall(b"Ready_pos_y")
-            cTime(Mode=w,Sector=s, Contents ='Socket Ready_pos_y',SavePath=init())
-            self.y_pos = pendant.Main.client_socket.recv(1024).decode()
-            cTime(Mode=w,Sector=s,Contents =f'Socket Recv self.y_pos {self.y_pos}', SavePath=init())
-            pendant.Main.robot_pos_y.setText(self.y_pos)
+            if 'y_pos' in str(poss[1]):
+                cTime(Mode=w,Sector=s, Contents =f'Socket RECV {poss[1]}',SavePath=init())
+                self.y_pos = poss[1].replace('y_pos','')
+                cTime(Mode=w,Sector=s,Contents =f'Socket Recv y_pos {self.y_pos}', SavePath=init())
+                pendant.Main.robot_pos_y.setText(self.y_pos)
+                pendant.Main.ys = float(self.y_pos)
+                
+            if 'z_pos' in str(poss[2]):
+                cTime(Mode=w,Sector=s, Contents =f'Socket RECV {poss[2]}',SavePath=init())
+                self.z_pos = poss[2].replace('z_pos','')
+                if '"' in self.z_pos:
+                    self.z_pos = self.z_pos.split('"')
+                    self.z_pos = self.z_pos[0]
+                cTime(Mode=w,Sector=s,Contents =f'Socket Recv z_pos {self.z_pos}', SavePath=init())
+                pendant.Main.robot_pos_z.setText(self.z_pos)
+                pendant.Main.zs = float(self.z_pos)
             
-            pendant.Main.client_socket.sendall(b"Ready_pos_z")
-            cTime(Mode=w,Sector=s,Contents ='Socket Ready_pos_z', SavePath=init())
-            self.z_pos = pendant.Main.client_socket.recv(1024).decode()
-            cTime(Mode=w,Sector=s,Contents =f'Socket Recv self.z_pos {self.z_pos}', SavePath=init())
-            pendant.Main.robot_pos_z.setText(self.z_pos)
-            
-            pendant.Main.xs = float(self.x_pos)
-            pendant.Main.ys = float(self.y_pos)
-            pendant.Main.zs = float(self.z_pos)
-            cTime(Mode=w,Sector=s,Contents =f'Robot Pos -> data Load', SavePath=init())
             pendant.Main.resume(self)
         except:
             cTime(Mode=w,Sector=s,Contents ='Socket Recv Failed', SavePath=init())
@@ -127,7 +165,7 @@ class Worker(QtCore.QThread):
             
 class GraphUpdater(QtCore.QThread):
     data_updated = QtCore.pyqtSignal(numpy.ndarray)
-    
+    time_read = 0
     def __init__(self):
         super().__init__()
         
@@ -143,7 +181,8 @@ class GraphUpdater(QtCore.QThread):
                     cTime(Mode=w,Sector=s,Contents ='Pos Update', SavePath=init())
             except:
                 cTime(Mode=w,Sector=s,Contents ='Pos Load Failed', SavePath=init())
-            QtCore.QThread.sleep(1)
+            QtCore.QThread.sleep(1)                    
+                
                 
 if __name__=='__main__':
     app =  pendant.QtWidgets.QApplication(pendant.sys.argv)
