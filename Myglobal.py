@@ -11,7 +11,7 @@ class cGlobal():
         config['System'] = {}
         config['System']['host'] = '127.0.0.1'
         config['System']['port'] = '8080'
-        config['System']['fontsizes'] = '6'
+        config['System']['fontsizes'] = '5'
         config['System']['resizes'] = '1'
         with open('System.ini', 'w') as configfile:
             config.write(configfile)
@@ -46,10 +46,7 @@ class cGlobal():
             p = config['System']['port']
             return h,p
         except:
-            cTime(Mode='Log_Write',
-                              Sector='Myglobal.cGlobal.get_HostPort',
-                              Contents ='Get Failed HostPort. Initail system resourse',
-                              SavePath=init())
+            cTime.Log_Write(self,'Get Failed HostPort. Initail system resourse')
             cGlobal.Initailize_System(self)
             cGlobal.get_HostPort(self)
         
@@ -62,10 +59,7 @@ class cGlobal():
             f = config['System']['fontsizes']
             return int(f)
         except:
-            cTime(Mode='Log_Write',
-                              Sector='Myglobal.cGlobal.get_Fontsizes',
-                              Contents ='Get Failed Fontsizes. Initail system resourse',
-                              SavePath=init())
+            cTime.Log_Write(self,'Get Failed Fontsizes. Initail system resourse')
             cGlobal.Initailize_System(self)
             cGlobal.get_HostPort(self)
         
@@ -78,10 +72,7 @@ class cGlobal():
             r = config['System']['resizes']
             return float(r)
         except:
-            cTime(Mode='Log_Write',
-                              Sector='Myglobal.cGlobal.get_Resizes',
-                              Contents ='Get Failed Resizes. Initail system resourse',
-                              SavePath=init())
+            cTime.Log_Write(self,'Get Failed Resizes. Initail system resourse')
             cGlobal.Initailize_System(self)
             cGlobal.get_HostPort(self)
         

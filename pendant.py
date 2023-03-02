@@ -1,7 +1,7 @@
 import sys,os,math,numpy
 from PyQt5 import QtWidgets,QtGui,QtCore
 import numpy
-from stl import mesh
+# from stl import mesh
 import Mymenubar,MyLeftwidget,MyToolbar,MyVisual,MyThread
 from MyLog import cTime
 from Mypath import init
@@ -227,20 +227,14 @@ class Main(QtWidgets.QMainWindow):
                 Main.judge_con=False
     
     def green_connect(self):
-        cTime(Mode='Log_Write',
-                              Sector='pendant.Main.green_connect',
-                              Contents ='Turn On GreenLight',
-                              SavePath=init())
+        cTime.Log_Write(self,'Turn On GreenLight')
         Main.robot_connect.setStyleSheet("color: Green;"
                                "background-color: #e0f2c9;"
                                "border-style: dashed;"
                                "border-width: 3px;"
                                "border-color: #a2ff30")
     def red_connect(self):
-        cTime(Mode='Log_Write',
-                              Sector='pendant.Main.red_connect',
-                              Contents ='Turn On RedLight',
-                              SavePath=init())
+        cTime.Log_Write(self,'Turn On RedLight')
         Main.robot_connect.setStyleSheet("color: red;"
                                     "background-color: #f2c9c9;"
                                     "border-style: dashed;"
@@ -262,22 +256,17 @@ class Main(QtWidgets.QMainWindow):
         Main.scatter.setData(pos=data)
         Main.quad.resetTransform()
         Main.quad.translate(data[0][0]-75,data[0][1]-75,data[0][2]-75)
-        
+        res = numpy.append(data,[[0,0,0]],axis=0)
+        Main.robot.setData(pos=res)
     # @pyqtSlot(bool)
     # def WaitThread(self, bools):
         
     def resume(self):
-        cTime(Mode='Log_Write',
-                              Sector='pendant.Main.resume',
-                              Contents ='Running True',
-                              SavePath=init())
+        cTime(Mode='Log_Write',Contents ='Running True')
         Main.running = True
     
     def pause(self):
-        cTime(Mode='Log_Write',
-                              Sector='pendant.Main.pause',
-                              Contents ='Running False',
-                              SavePath=init())
+        cTime(Mode='Log_Write',Contents ='Running False')
         Main.running = False
     
     def Lab_Mesh(self):
@@ -291,11 +280,17 @@ class Main(QtWidgets.QMainWindow):
     def canvas_grid(self):
         Main.canvas.opts['distance'] = 10000
         Main.canvas.setWindowTitle('Title')
+        
         Main.scatter = gl.GLScatterPlotItem(color = (255, 0, 0, 255) )
+        Main.canvas.addItem(Main.scatter)
+        
         Main.quad = gl.GLBoxItem(color = (255,255,255,255))
         Main.quad.setSize(150, 150, 150)
         Main.canvas.addItem(Main.quad)
-        Main.canvas.addItem(Main.scatter)
+        
+        Main.robot_array = numpy.array([[0, 0, 0], [10, 10, 10]])
+        Main.robot = gl.GLLinePlotItem(pos=Main.robot_array, color=(10, 0.0, 0.0, 1.0), width=30, antialias=True)
+        Main.canvas.addItem(Main.robot)
         
         ### grid
         pts1 = numpy.array([[-10000, 0, 0], [10000, 0, 0]])

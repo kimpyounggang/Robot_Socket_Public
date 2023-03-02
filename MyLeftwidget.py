@@ -2,6 +2,7 @@ import pendant
 from Myglobal import cGlobal
 from MyLog import cTime
 from Mypath import init
+import socket
 
 class left():
     def __init__(self, canvas,main,fontsize,toolbar,widget,bool):
@@ -19,7 +20,8 @@ class left():
         pendant.Main.set_layout(pendant.Main,
                             layout1="QVBoxLayout",layout1_1="QHBoxLayout",layout1_2="QHBoxLayout",layout1_3="QHBoxLayout",
                             layout1_11="QHBoxLayout",layout1_12="QHBoxLayout",layout1_13="QHBoxLayout",
-                            layout1_01="QVBoxLayout",layout1_02="QHBoxLayout",
+                            layout1_01="QVBoxLayout",layout1_02="QHBoxLayout",layout1_03="QHBoxLayout",
+                            layout1_21="QHBoxLayout",layout1_22="QHBoxLayout",layout1_23="QHBoxLayout",
                             layout2="QVBoxLayout")
         pendant.Main.widget(pendant.Main,kinds='label',name='로봇 연결',layout_num='LeftToolBar',stretchs=4,difname='robot_connect')
         pendant.Main.widget(pendant.Main,kinds='label',name='현재 위치',layout_num='layout1_01',difname='robot_pos',stretchs=2)
@@ -37,22 +39,39 @@ class left():
         pendant.Main.widget(pendant.Main,kinds='label',name='mm',layout_num='layout1_13',stretchs=2)
         
         
-        pendant.Main.widget(pendant.Main,kinds='label',name='로봇 이동',layout_num='layout1_02',stretchs=2)
+        pendant.Main.widget(pendant.Main,kinds='label',name='로봇 상대 이동',layout_num='layout1_02',stretchs=2)
         
-        pendant.Main.widget(pendant.Main,kinds='label',name='X',layout_num='layout1_1',stretchs=2,difname='move_pos_x')
-        pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_1',stretchs=1)
-        pendant.Main.widget(pendant.Main,kinds='label',name='mm',layout_num='layout1_1')
-        pendant.Main.widget(pendant.Main,kinds='btn',name='이동',layout_num='layout1_1',stretchs=2, difname='move_x')
+        pendant.Main.widget(pendant.Main,kinds='label',name='X',layout_num='layout1_1',stretchs=2)
+        pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_1',stretchs=1,difname='rline_1')
+        pendant.Main.widget(pendant.Main,kinds='label',name='+ mm',layout_num='layout1_1')
+        pendant.Main.widget(pendant.Main,kinds='btn',name='이동',layout_num='layout1_1',stretchs=2, difname='rmove_x')
         
-        pendant.Main.widget(pendant.Main,kinds='label',name='Y',layout_num='layout1_2',stretchs=2,difname='move_pos_y')
-        pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_2',stretchs=1)
-        pendant.Main.widget(pendant.Main,kinds='label',name='mm',layout_num='layout1_2')
-        pendant.Main.widget(pendant.Main,kinds='btn',name='이동',layout_num='layout1_2',stretchs=2, difname='move_y')
+        pendant.Main.widget(pendant.Main,kinds='label',name='Y',layout_num='layout1_2',stretchs=2)
+        pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_2',stretchs=1,difname='rline_2')
+        pendant.Main.widget(pendant.Main,kinds='label',name='+ mm',layout_num='layout1_2')
+        pendant.Main.widget(pendant.Main,kinds='btn',name='이동',layout_num='layout1_2',stretchs=2, difname='rmove_y')
         
-        pendant.Main.widget(pendant.Main,kinds='label',name='Z',layout_num='layout1_3',stretchs=2,difname='move_pos_z')
-        pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_3',stretchs=1)
-        pendant.Main.widget(pendant.Main,kinds='label',name='mm',layout_num='layout1_3')
-        pendant.Main.widget(pendant.Main,kinds='btn',name='이동',layout_num='layout1_3',stretchs=2, difname='move_z')
+        pendant.Main.widget(pendant.Main,kinds='label',name='Z',layout_num='layout1_3',stretchs=2)
+        pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_3',stretchs=1,difname='rline_3')
+        pendant.Main.widget(pendant.Main,kinds='label',name='+ mm',layout_num='layout1_3')
+        pendant.Main.widget(pendant.Main,kinds='btn',name='이동',layout_num='layout1_3',stretchs=2, difname='rmove_z')
+        
+        pendant.Main.widget(pendant.Main,kinds='label',name='로봇 절대 이동',layout_num='layout1_03',stretchs=2)
+        
+        pendant.Main.widget(pendant.Main,kinds='label',name='X',layout_num='layout1_21',stretchs=2)
+        pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_21',stretchs=1,difname='iline_1')
+        pendant.Main.widget(pendant.Main,kinds='label',name='mm',layout_num='layout1_21')
+        pendant.Main.widget(pendant.Main,kinds='btn',name='이동',layout_num='layout1_21',stretchs=2, difname='imove_x')
+        
+        pendant.Main.widget(pendant.Main,kinds='label',name='Y',layout_num='layout1_22',stretchs=2)
+        pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_22',stretchs=1,difname='iiline_1')
+        pendant.Main.widget(pendant.Main,kinds='label',name='mm',layout_num='layout1_22')
+        pendant.Main.widget(pendant.Main,kinds='btn',name='이동',layout_num='layout1_22',stretchs=2, difname='imove_y')
+        
+        pendant.Main.widget(pendant.Main,kinds='label',name='Z',layout_num='layout1_23',stretchs=2)
+        pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_23',stretchs=1,difname='iline_1')
+        pendant.Main.widget(pendant.Main,kinds='label',name='mm',layout_num='layout1_23')
+        pendant.Main.widget(pendant.Main,kinds='btn',name='이동',layout_num='layout1_23',stretchs=2, difname='imove_z')
 
         pendant.Main.left_layout(pendant.Main)
         pendant.Main.robot_connect_status(pendant.Main,False,False)
@@ -74,12 +93,25 @@ class left():
     def up2_def(self):
         pass
     
-    def move_x_def(self):
-        pass
-    def move_y_def(self):
-        pass
-    def move_z_def(self):
-        pass
+    def rmove_x_def(self):
+        res = 'rx'+pendant.Main.rline_1.text()
+        pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+    def rmove_y_def(self):
+        res = 'ry'+pendant.Main.rline_1.text()
+        pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+    def rmove_z_def(self):
+        res = 'rz'+pendant.Main.rline_1.text()
+        pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+    
+    def imove_x_def(self):
+        res = 'ix'+pendant.Main.rline_1.text()
+        pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+    def imove_y_def(self):
+        res = 'iy'+pendant.Main.rline_1.text()
+        pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+    def imove_z_def(self):
+        res = 'iz'+pendant.Main.rline_1.text()
+        pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
     
     
     
@@ -94,4 +126,7 @@ class left():
         
     
 if __name__=='__main__':
-    left()
+    app =  pendant.QtWidgets.QApplication(pendant.sys.argv)
+    main = pendant.Main()
+    main.show()
+    pendant.sys.exit(app.exec_())
