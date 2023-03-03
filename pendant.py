@@ -317,33 +317,6 @@ class Main(QtWidgets.QMainWindow):
         Main.canvas.addItem(Main.safety_quad)
         Main.safety_quad.translate(0,-2000,0)
         
-    # def socket_check_(self):
-    #     try: 
-    #         if self.socket_child1(self):
-    #             pos = Main.client_socket.recv(100).decode()
-    #             print(pos)
-    #             if pos =="":
-    #                 self.socket_child1(self)
-    #     except:
-    #         self.socket_child2(self)
-            
-    # def socket_child2(self):
-    #     try:
-    #         host,port = cGlobal.get_HostPort(self)
-    #         port = int(port)
-    #         cTime.Log_Write(self,'Socket Coonnect Try')
-    #         Main.client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    #         Main.client_socket.connect((host,port))
-    #         return True
-    #     except:
-    #         return False
-        
-    # def socket_child1(self):
-    #     try:
-    #         Main.client_socket.sendall(b"ping")
-    #         return True
-    #     except:
-    #         return False
     
 if __name__=="__main__":
     app =  QtWidgets.QApplication(sys.argv)

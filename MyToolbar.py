@@ -55,8 +55,6 @@ class MainToolbar():
                     if pos == res:
                         time.sleep(1)
                         next
-        
-    
     
     
     def RunWay_def(self):
