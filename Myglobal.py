@@ -46,10 +46,7 @@ class cGlobal():
             p = config['System']['port']
             return h,p
         except:
-            cTime(Mode='Log_Write',
-                              Sector='Myglobal.cGlobal.get_HostPort',
-                              Contents ='Get Failed HostPort. Initail system resourse',
-                              SavePath=init())
+            cTime.Log_Write(self,'Get Failed HostPort. Initail system resourse')
             cGlobal.Initailize_System(self)
             cGlobal.get_HostPort(self)
         
@@ -62,10 +59,7 @@ class cGlobal():
             f = config['System']['fontsizes']
             return int(f)
         except:
-            cTime(Mode='Log_Write',
-                              Sector='Myglobal.cGlobal.get_Fontsizes',
-                              Contents ='Get Failed Fontsizes. Initail system resourse',
-                              SavePath=init())
+            cTime.Log_Write(self,'Get Failed Fontsizes. Initail system resourse')
             cGlobal.Initailize_System(self)
             cGlobal.get_HostPort(self)
         
@@ -78,10 +72,7 @@ class cGlobal():
             r = config['System']['resizes']
             return float(r)
         except:
-            cTime(Mode='Log_Write',
-                              Sector='Myglobal.cGlobal.get_Resizes',
-                              Contents ='Get Failed Resizes. Initail system resourse',
-                              SavePath=init())
+            cTime.Log_Write(self,'Get Failed Resizes. Initail system resourse')
             cGlobal.Initailize_System(self)
             cGlobal.get_HostPort(self)
         

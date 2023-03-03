@@ -24,10 +24,7 @@ class MainToolbar():
         pendant.Main.add_toolbar(self,pendant.Main.LogBrowser,toolbarname='Log',area='bottom')
 
     def Connect_def(self):
-        cTime(Mode='Log_Write',
-                          Sector='MyToolbar.OtherToolbar.Connect_def',
-                          Contents ='Host / Port Edit Init',
-                          SavePath=init())
+        cTime.Log_Write(self,Contents ='Host / Port Edit Init')
         
         if hasattr(pendant.Main,'Bool_Connect')==False:
             setattr(pendant.Main,'Bool_Connect',0)

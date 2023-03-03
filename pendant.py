@@ -1,7 +1,7 @@
 import sys,os,math,numpy
 from PyQt5 import QtWidgets,QtGui,QtCore
 import numpy
-from stl import mesh
+# from stl import mesh
 import Mymenubar,MyLeftwidget,MyToolbar,MyVisual,MyThread
 from MyLog import cTime
 from Mypath import init
@@ -235,20 +235,14 @@ class Main(QtWidgets.QMainWindow):
                 Main.judge_con=False
     
     def green_connect(self):
-        cTime(Mode='Log_Write',
-                              Sector='pendant.Main.green_connect',
-                              Contents ='Turn On GreenLight',
-                              SavePath=init())
+        cTime.Log_Write(self,'Turn On GreenLight')
         Main.robot_connect.setStyleSheet("color: Green;"
                                "background-color: #e0f2c9;"
                                "border-style: dashed;"
                                "border-width: 3px;"
                                "border-color: #a2ff30")
     def red_connect(self):
-        cTime(Mode='Log_Write',
-                              Sector='pendant.Main.red_connect',
-                              Contents ='Turn On RedLight',
-                              SavePath=init())
+        cTime.Log_Write(self,'Turn On RedLight')
         Main.robot_connect.setStyleSheet("color: red;"
                                     "background-color: #f2c9c9;"
                                     "border-style: dashed;"
@@ -277,17 +271,11 @@ class Main(QtWidgets.QMainWindow):
     # def WaitThread(self, bools):
         
     def resume(self):
-        cTime(Mode='Log_Write',
-                              Sector='pendant.Main.resume',
-                              Contents ='Running True',
-                              SavePath=init())
+        cTime(Mode='Log_Write',Contents ='Running True')
         Main.running = True
     
     def pause(self):
-        cTime(Mode='Log_Write',
-                              Sector='pendant.Main.pause',
-                              Contents ='Running False',
-                              SavePath=init())
+        cTime(Mode='Log_Write',Contents ='Running False')
         Main.running = False
     
     def Lab_Mesh(self):
