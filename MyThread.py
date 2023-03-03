@@ -16,12 +16,13 @@ class Worker(QtCore.QThread):
         cTime.Log_Write(self,'Running True')
         _stop_event = QtCore.QWaitCondition()
         _mutex = QtCore.QMutex()
+        pendant.Main.running_thread = True
     
     def run(self):
         temp = 0
         if temp == 0:
             pendant.Main.robot_connect_status(pendant.Main,False,True)
-        while True:
+        while pendant.Main.running_thread:
             # self._mutex.lock()
             # self._stop_event.wait(self._mutex)
             # self._mutex.unlock()
@@ -32,12 +33,13 @@ class Worker(QtCore.QThread):
                 if self.socket_check():
                     cTime.Log_Write(self,'Socket Still Connect')
                     pendant.Main.robot_connect_status(pendant.Main,True,None)
-                    Worker.pause(self)
+                    # Worker.pause(self)
                     cTime.Log_Write(self,'Thread Pause')
                     Worker.socket_recv(self)
                 else:
                     cTime.Log_Write(self,'Socket Coonnect Failed')
                     if self.socket_try():
+                        # Worker.socket_check(self)
                         cTime.Log_Write(self,'Socket Coonnected')
                         pendant.Main.robot_connect_status(pendant.Main,True,None)
                     else:
@@ -49,10 +51,11 @@ class Worker(QtCore.QThread):
                 self.socket_try()
                 # pendant.Main.resume(self)
     
-    # def stop(self):
-    #     self._mutex.lock()
-    #     self._stop_event.wakeAll()
-    #     self._mutex.unlock()
+    def lab_stop(self):
+        pendant.Main.running_thread = False
+        
+    def lab_run(self):
+        pendant.Main.running_thread = True
     
     def socket_check(self):
         try:

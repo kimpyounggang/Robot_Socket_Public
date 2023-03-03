@@ -5,7 +5,7 @@ from Mypath import init
 from MyLog import cTime
 from MyVisual import Visualize
 import pyqtgraph.opengl as gl
-import  socket
+import  socket,time
 
 class MainToolbar():
     def __init__(self):
@@ -38,7 +38,27 @@ class MainToolbar():
             
     
     def AutoPoints_def(self):
-        pass
+        distance = 10
+        width = 10
+        depth = 10
+        height = 10
+        limit = 30
+        
+        for i1 in range(3):
+            for i2 in range(3):
+                for i3 in range(3):
+                    cTime.Log_Write(self,'rmove_que True')
+                    res = 'base,'+str(i3*30)+','+str(i2*30)+','+str(i1*30)+','
+                    pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+                    cTime.Log_Write(self,f'Socket Send {res}')
+                    pos = pendant.Main.client_socket.recv(100).decode()
+                    if pos == res:
+                        time.sleep(1)
+                        next
+        
+    
+    
+    
     def RunWay_def(self):
         obj = pendant.Main.canvas.axes
         if hasattr(pendant.Main, 'point_list'):

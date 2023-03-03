@@ -270,7 +270,11 @@ class Main(QtWidgets.QMainWindow):
     # @pyqtSlot(bool)
     # def WaitThread(self, bools):
         
-    
+    # def lab_stop(self):
+    #     Main.worker.stop()
+    #     MyThread.Worker.stop()
+    #     MyThread.Worker.wait()
+    #     self.quit()
     
     
     def Lab_Mesh(self):

@@ -39,7 +39,7 @@ class left():
         pendant.Main.widget(pendant.Main,kinds='label',name='mm',layout_num='layout1_13',stretchs=2)
         
         
-        pendant.Main.widget(pendant.Main,kinds='label',name='로봇 상대 이동',layout_num='layout1_02',stretchs=2)
+        pendant.Main.widget(pendant.Main,kinds='label',name='로봇 툴좌표 이동',layout_num='layout1_02',stretchs=2)
         
         pendant.Main.widget(pendant.Main,kinds='label',name='X',layout_num='layout1_1',stretchs=2)
         pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_1',stretchs=1,difname='rline_1')
@@ -56,7 +56,7 @@ class left():
         pendant.Main.widget(pendant.Main,kinds='label',name='+ mm',layout_num='layout1_3')
         pendant.Main.widget(pendant.Main,kinds='btn',name='이동',layout_num='layout1_3',stretchs=2, difname='rmove_z')
         
-        pendant.Main.widget(pendant.Main,kinds='label',name='로봇 절대 이동',layout_num='layout1_03',stretchs=2)
+        pendant.Main.widget(pendant.Main,kinds='label',name='로봇 베이스 이동',layout_num='layout1_03',stretchs=2)
         
         pendant.Main.widget(pendant.Main,kinds='label',name='X',layout_num='layout1_21',stretchs=2)
         pendant.Main.widget(pendant.Main,kinds='lineedit',name='',layout_num='layout1_21',stretchs=1,difname='iline_1')
@@ -96,58 +96,61 @@ class left():
         pass
     def up2_def(self):
         pass
-   
+        
     def rmove_x_def(self):
-        # MyThread.Worker.stop()
-        MyThread.Worker.wait()
+        # MyThread.Worker.lab_stop(self)
         cTime.Log_Write(self,'rmove_que True')
         print(pendant.Main.rline_1.text())
-        res = 'rx,'+pendant.Main.rline_1.text()+','
+        res = 'part,'+pendant.Main.rline_1.text()+','+'0,'+'0,'
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
         cTime.Log_Write(self,f'Socket Send {res}')
-        MyThread.Worker.start()
+        # MyThread.Worker.lab_run(self)
+       
     
     def rmove_y_def(self):
-        pendant.Main.pause(self)
+        # MyThread.Worker.lab_stop(self)
         cTime.Log_Write(self,'rmove_que True')
-        print(pendant.Main.rline_2.text())
-        res = 'ry,'+pendant.Main.rline_2.text()+','
+        print(pendant.Main.rline_1.text())
+        res = 'part,'+'0,'+pendant.Main.rline_2.text()+','+'0,'
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
         cTime.Log_Write(self,f'Socket Send {res}')
-        pendant.Main.client_socket.sendall(b"ping")
-        pendant.Main.resume(self)
+        # MyThread.Worker.lab_run(self)
         
     def rmove_z_def(self):
-        pendant.Main.pause(self)
+        # MyThread.Worker.lab_stop(self)
         cTime.Log_Write(self,'rmove_que True')
-        print(pendant.Main.rline_3.text())
-        res = 'rz,'+pendant.Main.rline_3.text()+','
+        print(pendant.Main.rline_1.text())
+        res = 'part,'+'0,'+'0,'+pendant.Main.rline_3.text()+','
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
         cTime.Log_Write(self,f'Socket Send {res}')
-        pendant.Main.client_socket.sendall(b"ping")
-        pendant.Main.resume(self)
+        # MyThread.Worker.lab_run(self)
     
     def imove_x_def(self):
-        res = 'ix'+pendant.Main.rline_1.text()
+        # MyThread.Worker.lab_stop(self)
+        cTime.Log_Write(self,'rmove_que True')
+        print(pendant.Main.rline_1.text())
+        res = 'base,'+pendant.Main.iline_1.text()+','+'0,'+'0,'
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-        # cTime(Mode='Log_Write',
-        #               Sector='MyLeftToolbar.Left.imove_x_def',
-        #               Contents =f'Socket Send {res}',
-        #               SavePath=init())
+        cTime.Log_Write(self,f'Socket Send {res}')
+        # MyThread.Worker.lab_run(self)
+        
     def imove_y_def(self):
-        res = 'iy'+pendant.Main.rline_1.text()
+        # MyThread.Worker.lab_stop(self)
+        cTime.Log_Write(self,'rmove_que True')
+        print(pendant.Main.rline_1.text())
+        res = 'base,'+'0,'+pendant.Main.iline_2.text()+','+'0,'
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-        # cTime(Mode='Log_Write',
-        #               Sector='MyLeftToolbar.Left.imove_y_def',
-        #               Contents =f'Socket Send {res}',
-        #               SavePath=init())
+        cTime.Log_Write(self,f'Socket Send {res}')
+        # MyThread.Worker.lab_run(self)
+        
     def imove_z_def(self):
-        res = 'iz'+pendant.Main.rline_1.text()
+        # MyThread.Worker.lab_stop(self)
+        cTime.Log_Write(self,'rmove_que True')
+        print(pendant.Main.rline_1.text())
+        res = 'base,'+'0,'+'0,'+pendant.Main.iline_3.text()+','
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-        # cTime(Mode='Log_Write',
-        #               Sector='MyLeftToolbar.Left.imove_z_def',
-        #               Contents =f'Socket Send {res}',
-        #               SavePath=init())
+        cTime.Log_Write(self,f'Socket Send {res}')
+        # MyThread.Worker.lab_run(self)
     
     
     
