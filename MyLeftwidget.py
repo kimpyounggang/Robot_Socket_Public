@@ -98,51 +98,56 @@ class left():
         pass
    
     def rmove_x_def(self):
-        MyThread.Worker.btn_ = True
-        cTime(Mode='Log_Write',
-            Sector='MyLeftToolbar.Left.rmove_x_def',
-            Contents =f'Try rmove_que == True',
-            SavePath=init())
-        time.sleep(1)
-        MyThread.Worker.btn_ = False
-
-           
+        # MyThread.Worker.stop()
+        MyThread.Worker.wait()
+        cTime.Log_Write(self,'rmove_que True')
+        print(pendant.Main.rline_1.text())
+        res = 'rx,'+pendant.Main.rline_1.text()+','
+        pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+        cTime.Log_Write(self,f'Socket Send {res}')
+        MyThread.Worker.start()
+    
     def rmove_y_def(self):
-        res = 'ry'+pendant.Main.rline_1.text()
+        pendant.Main.pause(self)
+        cTime.Log_Write(self,'rmove_que True')
+        print(pendant.Main.rline_2.text())
+        res = 'ry,'+pendant.Main.rline_2.text()+','
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-        cTime(Mode='Log_Write',
-                      Sector='MyLeftToolbar.Left.rmove_y_def',
-                      Contents =f'Socket Send {res}',
-                      SavePath=init())
+        cTime.Log_Write(self,f'Socket Send {res}')
+        pendant.Main.client_socket.sendall(b"ping")
+        pendant.Main.resume(self)
+        
     def rmove_z_def(self):
-        res = 'rz'+pendant.Main.rline_1.text()
+        pendant.Main.pause(self)
+        cTime.Log_Write(self,'rmove_que True')
+        print(pendant.Main.rline_3.text())
+        res = 'rz,'+pendant.Main.rline_3.text()+','
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-        cTime(Mode='Log_Write',
-                      Sector='MyLeftToolbar.Left.rmove_z_def',
-                      Contents =f'Socket Send {res}',
-                      SavePath=init())
+        cTime.Log_Write(self,f'Socket Send {res}')
+        pendant.Main.client_socket.sendall(b"ping")
+        pendant.Main.resume(self)
     
     def imove_x_def(self):
         res = 'ix'+pendant.Main.rline_1.text()
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-        cTime(Mode='Log_Write',
-                      Sector='MyLeftToolbar.Left.imove_x_def',
-                      Contents =f'Socket Send {res}',
-                      SavePath=init())
+        # cTime(Mode='Log_Write',
+        #               Sector='MyLeftToolbar.Left.imove_x_def',
+        #               Contents =f'Socket Send {res}',
+        #               SavePath=init())
     def imove_y_def(self):
         res = 'iy'+pendant.Main.rline_1.text()
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-        cTime(Mode='Log_Write',
-                      Sector='MyLeftToolbar.Left.imove_y_def',
-                      Contents =f'Socket Send {res}',
-                      SavePath=init())
+        # cTime(Mode='Log_Write',
+        #               Sector='MyLeftToolbar.Left.imove_y_def',
+        #               Contents =f'Socket Send {res}',
+        #               SavePath=init())
     def imove_z_def(self):
         res = 'iz'+pendant.Main.rline_1.text()
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-        cTime(Mode='Log_Write',
-                      Sector='MyLeftToolbar.Left.imove_z_def',
-                      Contents =f'Socket Send {res}',
-                      SavePath=init())
+        # cTime(Mode='Log_Write',
+        #               Sector='MyLeftToolbar.Left.imove_z_def',
+        #               Contents =f'Socket Send {res}',
+        #               SavePath=init())
     
     
     

@@ -2,7 +2,7 @@ import sys,os,math,numpy
 from PyQt5 import QtWidgets,QtGui,QtCore
 import numpy
 # from stl import mesh
-import Mymenubar,MyLeftwidget,MyToolbar,MyVisual,MyThread
+import Mymenubar,MyLeftwidget,MyToolbar,MyVisual,MyThread,socket
 from MyLog import cTime
 from Mypath import init
 from Myglobal import cGlobal
@@ -270,13 +270,8 @@ class Main(QtWidgets.QMainWindow):
     # @pyqtSlot(bool)
     # def WaitThread(self, bools):
         
-    def resume(self):
-        cTime(Mode='Log_Write',Contents ='Running True')
-        Main.running = True
     
-    def pause(self):
-        cTime(Mode='Log_Write',Contents ='Running False')
-        Main.running = False
+    
     
     def Lab_Mesh(self):
         stl_mesh = mesh.Mesh.from_file('./icon/probe.stl')
@@ -318,7 +313,33 @@ class Main(QtWidgets.QMainWindow):
         Main.canvas.addItem(Main.safety_quad)
         Main.safety_quad.translate(0,-2000,0)
         
+    # def socket_check_(self):
+    #     try: 
+    #         if self.socket_child1(self):
+    #             pos = Main.client_socket.recv(100).decode()
+    #             print(pos)
+    #             if pos =="":
+    #                 self.socket_child1(self)
+    #     except:
+    #         self.socket_child2(self)
+            
+    # def socket_child2(self):
+    #     try:
+    #         host,port = cGlobal.get_HostPort(self)
+    #         port = int(port)
+    #         cTime.Log_Write(self,'Socket Coonnect Try')
+    #         Main.client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    #         Main.client_socket.connect((host,port))
+    #         return True
+    #     except:
+    #         return False
         
+    # def socket_child1(self):
+    #     try:
+    #         Main.client_socket.sendall(b"ping")
+    #         return True
+    #     except:
+    #         return False
     
 if __name__=="__main__":
     app =  QtWidgets.QApplication(sys.argv)

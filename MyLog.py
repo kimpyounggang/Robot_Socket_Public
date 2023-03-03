@@ -20,7 +20,10 @@ class cTime:
         return cTime.res
             
     def Log_Write(self, pContents):
-        pSector = self.__class__.__name__+'->'+sys._getframe(2).f_code.co_name+'->'+sys._getframe(1).f_code.co_name
+        try:
+            pSector = self.__class__.__name__+'->'+sys._getframe(2).f_code.co_name+'->'+sys._getframe(1).f_code.co_name
+        except:
+            pSector ='ERROR'
         pPath = init()
         now = str(datetime.now())
         try:

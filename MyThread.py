@@ -9,67 +9,55 @@ import  socket
 from PyQt5 import QtWidgets,QtCore
 
 class Worker(QtCore.QThread):
-    btn_ = False
     # WatitThread = QtCore.pyqtSignal(bool)
     # progress = QtCore.pyqtSignal(int)
     def __init__(self):
         super().__init__()
         cTime.Log_Write(self,'Running True')
-        pendant.Main.running = True
-        # self.bools = False
+        _stop_event = QtCore.QWaitCondition()
+        _mutex = QtCore.QMutex()
+    
     def run(self):
         temp = 0
         if temp == 0:
             pendant.Main.robot_connect_status(pendant.Main,False,True)
-        while pendant.Main.running:
+        while True:
+            # self._mutex.lock()
+            # self._stop_event.wait(self._mutex)
+            # self._mutex.unlock()
             QtCore.QThread.sleep(1)
             temp +=1
             try:
+                cTime.Log_Write(self,f'Time Tracker {temp}')
                 if self.socket_check():
                     cTime.Log_Write(self,'Socket Still Connect')
                     pendant.Main.robot_connect_status(pendant.Main,True,None)
-                    pendant.Main.pause(self)
+                    Worker.pause(self)
                     cTime.Log_Write(self,'Thread Pause')
                     Worker.socket_recv(self)
-                    res = 'rx,'+pendant.Main.rline_1.text()+','
-                    pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-                    echo = pendant.Main.client_socket.recv(1024).decode()
-                    # self.bools = True
-                    # self.WatitThread.emit(self.bools)
                 else:
                     cTime.Log_Write(self,'Socket Coonnect Failed')
                     if self.socket_try():
                         cTime.Log_Write(self,'Socket Coonnected')
                         pendant.Main.robot_connect_status(pendant.Main,True,None)
-                        if Worker.btn_ == True:
-                            cTime(Mode='Log_Write',
-                              Sector='MyToolbar.Worker.socket_try',
-                              Contents ='rmove_que True',
-                              SavePath=init())
-                            res = 'rx,'+pendant.Main.rline_1.text()+','
-                            pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-                            echo = pendant.Main.client_socket.recv(1024).decode()
-                            if echo==res:
-                                cTime(Mode='Log_Write',
-                                        Sector='MyLeftToolbar.Left.rmove_x_def',
-                                        Contents =f'Socket Send {res}',
-                                        SavePath=init())
                     else:
                         cTime.Log_Write(self,'Socket Coonnect Failed')
                         pendant.Main.robot_connect_status(pendant.Main,False,None)
             except:
                 cTime.Log_Write(self,'Socket Coonnect Failed')
                 pendant.Main.robot_connect_status(pendant.Main,False,None)
-                pendant.Main.resume(self)
-                
+                self.socket_try()
+                # pendant.Main.resume(self)
+    
+    # def stop(self):
+    #     self._mutex.lock()
+    #     self._stop_event.wakeAll()
+    #     self._mutex.unlock()
+    
     def socket_check(self):
         try:
             pendant.Main.client_socket.sendall(b"ping")
-            echo = pendant.Main.client_socket.recv(100).decode()
-            if echo=="ping":
-                return True
-            else:
-                return False
+            return True
         except:
             return False
               
@@ -77,8 +65,6 @@ class Worker(QtCore.QThread):
         try:
             host,port = cGlobal.get_HostPort(self)
             port = int(port)
-            # host = '127.0.0.1'
-            # port = 8080
             cTime.Log_Write(self,'Socket Coonnect Try')
             pendant.Main.client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
             pendant.Main.client_socket.connect((host,port))
@@ -87,12 +73,9 @@ class Worker(QtCore.QThread):
             return False
         
     def socket_recv(self):
-        # pendant.Main.canvas = pendant.Main.canvas
-        # pendant.Main.client_socket = socket_pointer
         cTime.Log_Write(self,'Socket Recv Try')
         try:
             pos = pendant.Main.client_socket.recv(100).decode()
-            pendant.Main.client_socket.sendall(bytes(pos,encoding='utf-8'))
             pos = pos.strip('"')
             poss = pos.split(',')
             cTime.Log_Write(self,f'Socket RECV {pos}')
@@ -100,14 +83,14 @@ class Worker(QtCore.QThread):
             if 'x_pos' in str(poss[0]):
                 cTime.Log_Write(self,f'Socket RECV {poss[0]}')
                 self.x_pos = poss[0].replace('x_pos','')
-                cTime(Mode=w,Sector=s,Contents =f'Socket Recv x_pos {self.x_pos}')
+                cTime.Log_Write(self,f'Socket Recv x_pos {self.x_pos}')
                 pendant.Main.robot_pos_x.setText(self.x_pos)
                 pendant.Main.xs = float(self.x_pos)
             
             if 'y_pos' in str(poss[1]):
                 cTime.Log_Write(self,f'Socket RECV {poss[1]}')
                 self.y_pos = poss[1].replace('y_pos','')
-                cTime(Mode=w,Sector=s,Contents =f'Socket Recv y_pos {self.y_pos}')
+                cTime.Log_Write(self,f'Socket Recv y_pos {self.y_pos}')
                 pendant.Main.robot_pos_y.setText(self.y_pos)
                 pendant.Main.ys = float(self.y_pos)
                 
@@ -117,9 +100,10 @@ class Worker(QtCore.QThread):
                 if '"' in self.z_pos:
                     self.z_pos = self.z_pos.split('"')
                     self.z_pos = self.z_pos[0]
-                cTime(self,Contents =f'Socket Recv z_pos {self.z_pos}')
+                cTime.Log_Write(self,f'Socket Recv z_pos {self.z_pos}')
                 pendant.Main.robot_pos_z.setText(self.z_pos)
                 pendant.Main.zs = float(self.z_pos)
+
         except:
             cTime.Log_Write(self,'Socket Recv Failed')
             pendant.Main.resume(self)
@@ -140,6 +124,7 @@ class GraphUpdater(QtCore.QThread):
                     cTime.Log_Write(self,'Pos Update')
             except:
                 cTime.Log_Write(self,'Pos Load Failed')
+                pass
             QtCore.QThread.sleep(1)
                 
                 
