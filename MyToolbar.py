@@ -38,24 +38,45 @@ class MainToolbar():
             
     
     def AutoPoints_def(self):
-        distance = 10
-        width = 10
-        depth = 10
-        height = 10
-        limit = 30
+        grid = cGlobal.get_Gridsacale(cGlobal)
+        stepsize = cGlobal.get_Stepsize(cGlobal)
         
-        for i1 in range(3):
-            for i2 in range(3):
-                for i3 in range(3):
-                    cTime.Log_Write(self,'rmove_que True')
-                    res = 'base,'+str(i3*30)+','+str(i2*30)+','+str(i1*30)+','
+        MainToolbar.AutoPoints_move(MainToolbar,grid,stepsize)
+    
+        
+    
+    def AutoPoints_move(self,grid,stepsize):
+        i_height = -1
+        i_dep = -1
+        for height in range(0,grid,stepsize):
+            i_height = -1*i_height
+            res = 'base,'+str(stepsize)+','+str(0)+','+str(0)+','
+            pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+            pos = pendant.Main.client_socket.recv(100).decode()
+            if pos == res:
+                time.sleep(1)
+            else:
+                pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+                time.sleep(1)
+            for depth in range(0,grid,stepsize):
+                i_dep = -1*i_dep
+                res = 'base,'+str(0)+','+str(stepsize*i_height)+','+str(0)+','
+                pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+                pos = pendant.Main.client_socket.recv(100).decode()
+                if pos == res:
+                    time.sleep(1)
+                else:
+                    pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+                    time.sleep(1)
+                for width in range(0,grid,stepsize):
+                    res = 'base,'+str(0)+','+str(0)+','+str(stepsize*i_dep)+','
                     pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-                    cTime.Log_Write(self,f'Socket Send {res}')
                     pos = pendant.Main.client_socket.recv(100).decode()
                     if pos == res:
                         time.sleep(1)
-                        next
-    
+                    else:
+                        pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+                        time.sleep(1)
     
     def RunWay_def(self):
         obj = pendant.Main.canvas.axes

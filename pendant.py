@@ -70,7 +70,6 @@ class Main(QtWidgets.QMainWindow):
         # gz.translate(0, 0, 0)
         # Main.canvas.addItem(gz)
 # size=QtGui.QVector3D(2000,2000,2000)
-        
 
         Main.public_int('robot_now_row_director','remote_now_dir','camera_axis_x','camera_axis_y','camera_axis_z')
         Main.public_list('robot_nowrow','robot_list','base_list','remote_now_row','axes_list')
@@ -84,7 +83,11 @@ class Main(QtWidgets.QMainWindow):
         Main.rule_icon = {"undertext":"ToolButtonTextUnderIcon"}
         Main.toolbarareas = {"top":"TopToolBarArea","right":"RightToolBarArea","bottom":"BottomToolBarArea"}
         
-        
+        Main.position = (0, 0, 0)  # 로봇의 위치 초기화
+        Main.total_distance = 0  # 로봇이 이동한 총 거리 초기화
+        Main.directions = [(0, 0, 1), (0, 0, -1), 
+                           (0, 1, 0), (0, -1, 0), 
+                           (1, 0, 0), (-1, 0, 0)]  # 로봇이 이동할 수 있는 방향들
         
         Main.menubars = self.menuBar()
         Main.menubars.setNativeMenuBar(False)
