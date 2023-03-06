@@ -30,10 +30,8 @@ class Main(QtWidgets.QMainWindow):
 
         ####### 메뉴바 (File, Edit ...)
         Mymenubar.menubar(Main.menubars,Main.widget_kinds)
-        
         ####### 메인 툴바
         MyToolbar.MainToolbar.toolbar(self,Main.rule_icon,Main.toolbarareas)
-        
         ####### 왼쪽 툴바 (상태창, 명령줄)  -> 포인터 설정에 시간이 걸리고 직관적이지 않다. main._init_ 에서 선언
         Main.LeftToolBar = QtWidgets.QToolBar("Control Proc", self)
         MyLeftwidget.left(Main.canvas,Main.widgets,cGlobal.get_Fontsizes,Main.LeftToolBar,Main.widget_kinds,Main.judge_con)

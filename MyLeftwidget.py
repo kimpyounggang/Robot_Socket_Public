@@ -96,7 +96,7 @@ class left():
         pass
     def up2_def(self):
         pass
-        
+
     def rmove_x_def(self):
         # MyThread.Worker.lab_stop(self)
         cTime.Log_Write(self,'rmove_que True')
