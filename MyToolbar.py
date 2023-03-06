@@ -5,7 +5,7 @@ from Mypath import init
 from MyLog import cTime
 from MyVisual import Visualize
 import pyqtgraph.opengl as gl
-import  socket
+import  socket,time
 
 class MainToolbar():
     def __init__(self):
@@ -24,7 +24,7 @@ class MainToolbar():
         pendant.Main.add_toolbar(self,pendant.Main.LogBrowser,toolbarname='Log',area='bottom')
 
     def Connect_def(self):
-        cTime.Log_Write(self,Contents ='Host / Port Edit Init')
+        cTime.Log_Write(self,'Host / Port Edit Init')
         
         if hasattr(pendant.Main,'Bool_Connect')==False:
             setattr(pendant.Main,'Bool_Connect',0)
@@ -38,7 +38,46 @@ class MainToolbar():
             
     
     def AutoPoints_def(self):
-        pass
+        grid = cGlobal.get_Gridsacale(cGlobal)
+        stepsize = cGlobal.get_Stepsize(cGlobal)
+        
+        MainToolbar.AutoPoints_move(MainToolbar,grid,stepsize)
+    
+        
+    
+    def AutoPoints_move(self,grid,stepsize):
+        i_height = -1
+        i_dep = -1
+        for height in range(0,grid,stepsize):
+            i_height = -1*i_height
+            res = 'base,'+str(stepsize)+','+str(0)+','+str(0)+','
+            pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+            pos = pendant.Main.client_socket.recv(100).decode()
+            if pos == res:
+                time.sleep(1)
+            else:
+                pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+                time.sleep(1)
+            for depth in range(0,grid,stepsize):
+                i_dep = -1*i_dep
+                res = 'base,'+str(0)+','+str(stepsize*i_height)+','+str(0)+','
+                pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+                pos = pendant.Main.client_socket.recv(100).decode()
+                if pos == res:
+                    time.sleep(1)
+                else:
+                    pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+                    time.sleep(1)
+                for width in range(0,grid,stepsize):
+                    res = 'base,'+str(0)+','+str(0)+','+str(stepsize*i_dep)+','
+                    pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+                    pos = pendant.Main.client_socket.recv(100).decode()
+                    if pos == res:
+                        time.sleep(1)
+                    else:
+                        pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+                        time.sleep(1)
+    
     def RunWay_def(self):
         obj = pendant.Main.canvas.axes
         if hasattr(pendant.Main, 'point_list'):
@@ -120,6 +159,7 @@ class insert_host_port(QtWidgets.QDialog):
         port = self.edit2.text()
         cGlobal.Set_HostPort(self,host,port)
         self.close()
+        setattr(pendant.Main,'Bool_Connect',1)
         
 
             

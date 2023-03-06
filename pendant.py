@@ -2,7 +2,7 @@ import sys,os,math,numpy
 from PyQt5 import QtWidgets,QtGui,QtCore
 import numpy
 # from stl import mesh
-import Mymenubar,MyLeftwidget,MyToolbar,MyVisual,MyThread
+import Mymenubar,MyLeftwidget,MyToolbar,MyVisual,MyThread,socket
 from MyLog import cTime
 from Mypath import init
 from Myglobal import cGlobal
@@ -30,10 +30,8 @@ class Main(QtWidgets.QMainWindow):
 
         ####### 메뉴바 (File, Edit ...)
         Mymenubar.menubar(Main.menubars,Main.widget_kinds)
-        
         ####### 메인 툴바
         MyToolbar.MainToolbar.toolbar(self,Main.rule_icon,Main.toolbarareas)
-        
         ####### 왼쪽 툴바 (상태창, 명령줄)  -> 포인터 설정에 시간이 걸리고 직관적이지 않다. main._init_ 에서 선언
         Main.LeftToolBar = QtWidgets.QToolBar("Control Proc", self)
         MyLeftwidget.left(Main.canvas,Main.widgets,cGlobal.get_Fontsizes,Main.LeftToolBar,Main.widget_kinds,Main.judge_con)
@@ -72,7 +70,6 @@ class Main(QtWidgets.QMainWindow):
         # gz.translate(0, 0, 0)
         # Main.canvas.addItem(gz)
 # size=QtGui.QVector3D(2000,2000,2000)
-        
 
         Main.public_int('robot_now_row_director','remote_now_dir','camera_axis_x','camera_axis_y','camera_axis_z')
         Main.public_list('robot_nowrow','robot_list','base_list','remote_now_row','axes_list')
@@ -86,12 +83,16 @@ class Main(QtWidgets.QMainWindow):
         Main.rule_icon = {"undertext":"ToolButtonTextUnderIcon"}
         Main.toolbarareas = {"top":"TopToolBarArea","right":"RightToolBarArea","bottom":"BottomToolBarArea"}
         
-        
+        Main.position = (0, 0, 0)  # 로봇의 위치 초기화
+        Main.total_distance = 0  # 로봇이 이동한 총 거리 초기화
+        Main.directions = [(0, 0, 1), (0, 0, -1), 
+                           (0, 1, 0), (0, -1, 0), 
+                           (1, 0, 0), (-1, 0, 0)]  # 로봇이 이동할 수 있는 방향들
         
         Main.menubars = self.menuBar()
         Main.menubars.setNativeMenuBar(False)
         Main.judge_con = False
-        
+        Main.rmove_que = False
 
     
         
@@ -188,6 +189,10 @@ class Main(QtWidgets.QMainWindow):
         Main.wid6 = QtWidgets.QGroupBox()
         Main.wid7 = QtWidgets.QGroupBox()
         Main.wid8 = QtWidgets.QGroupBox()
+        Main.wid9 = QtWidgets.QGroupBox()
+        Main.wid10 = QtWidgets.QGroupBox()
+        Main.wid11 = QtWidgets.QGroupBox()
+        Main.wid12 = QtWidgets.QGroupBox()
         MyLeftwidget.left.set_leftlayout(Main)
         Main.LeftToolBar.addWidget(Main.wid1)
         Main.LeftToolBar.addWidget(Main.wid2)
@@ -197,6 +202,10 @@ class Main(QtWidgets.QMainWindow):
         Main.LeftToolBar.addWidget(Main.wid6)
         Main.LeftToolBar.addWidget(Main.wid7)
         Main.LeftToolBar.addWidget(Main.wid8)
+        Main.LeftToolBar.addWidget(Main.wid9)
+        Main.LeftToolBar.addWidget(Main.wid10)
+        Main.LeftToolBar.addWidget(Main.wid11)
+        Main.LeftToolBar.addWidget(Main.wid12)
         
     def visual_layout(self):
         Main.wid = QtWidgets.QGroupBox()
@@ -245,11 +254,12 @@ class Main(QtWidgets.QMainWindow):
         Main.worker = MyThread.Worker()
         Main.worker.finished.connect(Main.worker.deleteLater)
         Main.worker.start()
-        # Main.worker.WatitThread.connect(self.WaitThread)
+        
         Main.updater = MyThread.GraphUpdater()
         Main.updater.data_updated.connect(self.update_data)
         Main.updater.finished.connect(Main.updater.deleteLater)
         Main.updater.start()
+    
     
     @QtCore.pyqtSlot(numpy.ndarray)
     def update_data(self, data):
@@ -261,13 +271,12 @@ class Main(QtWidgets.QMainWindow):
     # @pyqtSlot(bool)
     # def WaitThread(self, bools):
         
-    def resume(self):
-        cTime(Mode='Log_Write',Contents ='Running True')
-        Main.running = True
+    # def lab_stop(self):
+    #     Main.worker.stop()
+    #     MyThread.Worker.stop()
+    #     MyThread.Worker.wait()
+    #     self.quit()
     
-    def pause(self):
-        cTime(Mode='Log_Write',Contents ='Running False')
-        Main.running = False
     
     def Lab_Mesh(self):
         stl_mesh = mesh.Mesh.from_file('./icon/probe.stl')
@@ -308,7 +317,6 @@ class Main(QtWidgets.QMainWindow):
         Main.safety_quad.setSize(4000, 4000, 3000)
         Main.canvas.addItem(Main.safety_quad)
         Main.safety_quad.translate(0,-2000,0)
-        
         
     
 if __name__=="__main__":
