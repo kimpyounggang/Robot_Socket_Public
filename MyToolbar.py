@@ -5,7 +5,7 @@ from Mypath import init
 from MyLog import cTime
 from MyVisual import Visualize
 import pyqtgraph.opengl as gl
-import  socket,time
+import  socket,time,math
 
 class MainToolbar():
     def __init__(self):
@@ -15,7 +15,7 @@ class MainToolbar():
         pendant.Main.rule_icon = rule
         pendant.Main.toolbarareas = area
         
-        pendant.Main.add_toolbar(self,'Connect','Create','Load','AutoPoints', 'StepBack','Pause','Run','StepGo','RunWay' ,'WaySetting', 'CycleTime', 'SafetyZone', toolbarname='MenuProc',rule='undertext',area='top')
+        pendant.Main.add_toolbar(self,'Connect','Create','Load','View','Light','AutoPoints', 'StepBack','Pause','Run','StepGo','RunWay' ,'WaySetting', 'CycleTime', 'SafetyZone', toolbarname='MenuProc',rule='undertext',area='top')
         
         pendant.Main.Right_listwidget = QtWidgets.QListWidget()
         pendant.Main.add_toolbar(self,pendant.Main.Right_listwidget,toolbarname='TeachingList',area='right')
@@ -38,16 +38,30 @@ class MainToolbar():
             
     
     def AutoPoints_def(self):
-        grid = cGlobal.get_Gridsacale(cGlobal)
-        stepsize = cGlobal.get_Stepsize(cGlobal)
+        grid = int(cGlobal.get_Gridsacale(cGlobal))
+        stepsize = int(cGlobal.get_Stepsize(cGlobal))
+        MainToolbar.AutoPoints_visual(MainToolbar,grid,stepsize)
+        # MainToolbar.AutoPoints_move(MainToolbar,grid,stepsize)
+
+    def AutoPoints_visual(self,grid,stepsize):
+        lists = []
+        x = float(pendant.Main.robot_pos_x.text())
+        y = float(pendant.Main.robot_pos_y.text())
+        z = float(pendant.Main.robot_pos_z.text())
         
-        MainToolbar.AutoPoints_move(MainToolbar,grid,stepsize)
-    
-        
-    
+        for height in range(0,grid,stepsize):
+            for depth in range(0,grid,stepsize):
+                for width in range(0,grid,stepsize):
+                    lists.append([width+x,depth+y,height+z])
+                    
+        scatter = gl.GLScatterPlotItem(pos=lists)
+        pendant.Main.canvas.addItem(scatter)
+                    
     def AutoPoints_move(self,grid,stepsize):
         i_height = -1
         i_dep = -1
+        
+        
         for height in range(0,grid,stepsize):
             i_height = -1*i_height
             res = 'base,'+str(stepsize)+','+str(0)+','+str(0)+','
@@ -79,23 +93,23 @@ class MainToolbar():
                         time.sleep(1)
     
     def RunWay_def(self):
-        obj = pendant.Main.canvas.axes
+        x = []
         if hasattr(pendant.Main, 'point_list'):
             point = pendant.Main.point_list
-            for i in range(len(pendant.Main.point_list)-1):    
-                x = numpy.linspace(point[i][0], point[i+1][0],10)
-                y = numpy.linspace(point[i][1], point[i+1][1],10)
-                z = numpy.linspace(point[i][2], point[i+1][2],10)
-                obj.plot(x,y,z)
-                    # obj.plot3D(pendant.Main.point_list[][0])
-            pendant.Main.canvas.draw()
+            for i in range(len(pendant.Main.point_list)):    
+                x.append([point[i][0],point[i][1],point[i][2]])
+            lines = gl.GLLinePlotItem(pos=x)
+            pendant.Main.canvas.addItem(lines)
         
     def WaySetting_def(self):
         MyRobot_pos = gl.GLScatterPlotItem(pos = numpy.array([[pendant.Main.x,pendant.Main.y,pendant.Main.z]]))
         pendant.Main.canvas.addItem(MyRobot_pos)  
         
     def Create_def(self):
-        pass
+        Visualize.create_test(self)
+    
+    
+    
     def Load_def(self):
         # pendant.Main.canvas.axes.cla()
         # pendant.Main.canvas.clear()
@@ -121,7 +135,22 @@ class MainToolbar():
     
     def SafetyZone_def(self):
         pass
-
+    
+    def View_def(self):
+        camera = pendant.Main.canvas
+        if camera.opts['fov']==60:
+            distance_new = camera.opts['distance']*4*math.tan(camera.opts['fov']/2) / math.tan(1/2)
+            camera.opts['fov']=1
+            camera.opts['distance'] = -distance_new
+        else:
+            distance_new = camera.opts['distance']*math.tan(1/2) / (4*math.tan(60/2))
+            camera.opts['fov']=60
+            camera.opts['distance'] = -distance_new
+        camera.update()
+    
+    def Light_def(self):
+        pass
+        
 class insert_host_port(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()

@@ -1,4 +1,4 @@
-import pendant
+import pendant,os
 from PyQt5 import QtWidgets
 from MyToolbar import MainToolbar
 def menubar(menubar,widget):
@@ -6,8 +6,8 @@ def menubar(menubar,widget):
     pendant.Main.widget_kinds = widget
     pendant.Main.widget(pendant.Main,'Open','Save','Quit',kinds='action',name='파일',difname='file')
     pendant.Main.widget(pendant.Main,'Open','Save','Quit',kinds='action',name='수정',difname='edit')
-    pendant.Main.widget(pendant.Main,'Open','Save','Quit',kinds='action',name='폼',difname='form')
-    pendant.Main.widget(pendant.Main,'Open','Save','Quit',kinds='action',name='설정',difname='setting')
+    pendant.Main.widget(pendant.Main,'Pos','Save','Quit',kinds='action',name='연구소',difname='form')
+    pendant.Main.widget(pendant.Main,'Open','Reset',kinds='action',name='설정',difname='setting')
     pendant.Main.widget(pendant.Main,'Open','Save','Quit',kinds='action',name='윈도우',difname='window')
     pendant.Main.widget(pendant.Main,'Open','Save','Quit',kinds='action',name='Help')
 def file_Open_def(self):
@@ -24,19 +24,25 @@ def edit_Save_def():
 def edit_Quit_def():
     pass
 
-def form_Open_def():
-    pass
+def form_Pos_def():
+    pendant.Main.robot_pos_x.setText('1000')
+    pendant.Main.robot_pos_y.setText('1000')
+    pendant.Main.robot_pos_z.setText('1000')
+    
 def form_Save_def():
     pass
 def form_Quit_def():
     pass
 
 def setting_Open_def():
-    pass
-def setting_Save_def():
-    pass
-def setting_Quit_def():
-    pass
+    os.system('System.ini')
+def setting_Reset_def():
+    reply = pendant.QtWidgets.QMessageBox.question(None, '경고!', '설정 초기화?', pendant.QtWidgets.QMessageBox.Yes | pendant.QtWidgets.QMessageBox.No, pendant.QtWidgets.QMessageBox.No)
+    if reply == pendant.QtWidgets.QMessageBox.Yes:
+        print('초기화')
+    else:
+        print('No 버튼이 눌렸습니다.')
+
 
 def window_Open_def():
     pass

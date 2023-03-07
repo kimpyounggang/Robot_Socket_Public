@@ -3,6 +3,7 @@ from MyLog import cTime
 from Mypath import init
 from Myglobal import cGlobal
 import pyqtgraph.opengl as gl
+import pyqtgraph as pg
 import numpy as np
 class Visualize():
     def __init__(self, canvas, main,fontsize,bool):
@@ -23,12 +24,10 @@ class Visualize():
         pendant.Main.set_layout(pendant.Main,vis_layout="QVBoxLayout",vis_tool='QHBoxLayout')
         # pendant.Main.vis_layout.addWidget(pendant.Main.toolbar)
         pendant.Main.vis_layout.addWidget(pendant.Main.canvas)
-        pendant.Main.vis_layout.addWidget(pendant.Main.Hslider)
-        pendant.Main.vis_tool.addWidget(pendant.Main.Vslider)
+        # pendant.Main.vis_layout.addWidget(pendant.Main.Hslider)
+        # pendant.Main.vis_tool.addWidget(pendant.Main.Vslider)
         
         pendant.Main.visual_layout(pendant.Main)
-        
-        
         
         
     def set_vislayout(self):
@@ -109,6 +108,30 @@ class Visualize():
             pendant.Main.canvas.addItem(spl)
             pendant.Main.Right_listwidget.addItem(f'{self.point_name_proc[i1]}')
             
+    def create_test(self):
+        x = []
+        y = []
+        z = []
+        for i1 in range(1,10000,100):
+            for i2 in range(1,10000,100):
+                for i3 in range(1,10000,100):
+                    x.append([i1,i2,i3])
+                    
+        
+        # x = np.random.normal(size=100000)
+        # y = np.random.normal(size=100000)
+        # z = np.random.normal(size=100000)
+        # pos = np.column_stack((x, y, z))
+        # # Create scatter plot item
+        # scatter = gl.GLScatterPlotItem(pos=pos)
+        scatter = gl.GLScatterPlotItem(pos=x)
+
+        # Set up the plot widget
+        pendant.Main.canvas.addItem(scatter)
+        
+                    
+
+        
     
     # def Widget(self):
     #     

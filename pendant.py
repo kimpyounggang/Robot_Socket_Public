@@ -8,7 +8,7 @@ from Mypath import init
 from Myglobal import cGlobal
 import pyqtgraph.opengl as gl
 
-
+import pyqtgraph as pg
 # class MplCanvas():
 #     def __init__(self,):
 #         Main.axes = gl.GLViewWidget()
@@ -27,7 +27,6 @@ class Main(QtWidgets.QMainWindow):
         ####### 이니셜라이즈
         super().__init__()
         self.defined()
-
         ####### 메뉴바 (File, Edit ...)
         Mymenubar.menubar(Main.menubars,Main.widget_kinds)
         ####### 메인 툴바
@@ -287,6 +286,7 @@ class Main(QtWidgets.QMainWindow):
         Main.canvas.addItem(Main.meshs)
         
     def canvas_grid(self):
+        # Main.canvas.opts['distance'] = 10000
         Main.canvas.opts['distance'] = 10000
         Main.canvas.setWindowTitle('Title')
         
@@ -301,7 +301,7 @@ class Main(QtWidgets.QMainWindow):
         Main.robot = gl.GLLinePlotItem(pos=Main.robot_array, color=(10, 0.0, 0.0, 1.0), width=30, antialias=True)
         Main.canvas.addItem(Main.robot)
         
-        ### grid
+        ## grid
         pts1 = numpy.array([[-10000, 0, 0], [10000, 0, 0]])
         xgrid = gl.GLLinePlotItem(pos=pts1, color=(10, 0.0, 0.0, 1.0), width=3, antialias=True)
         pts2 = numpy.array([[0, -10000, 0], [0, 10000, 0]])
@@ -318,7 +318,7 @@ class Main(QtWidgets.QMainWindow):
         Main.canvas.addItem(Main.safety_quad)
         Main.safety_quad.translate(0,-2000,0)
         
-    
+        pass
 if __name__=="__main__":
     app =  QtWidgets.QApplication(sys.argv)
     main = Main()
