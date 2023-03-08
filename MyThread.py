@@ -129,6 +129,78 @@ class GraphUpdater(QtCore.QThread):
                 cTime.Log_Write(self,'Pos Load Failed')
                 pass
             QtCore.QThread.sleep(1)
+            
+            
+           
+class Grid_Worker(QtCore.QThread):
+    finished = QtCore.pyqtSignal()
+    def __init__(self):
+        super().__init__()
+        
+    def run(self):
+        grid = int(cGlobal.get_Gridsacale(self))
+        stepsize = int(cGlobal.get_Stepsize(self))
+        # while True:
+        i_height = -1
+        i_dep = -1
+        # for height in range(0,grid,stepsize):
+        #     i_height = -1*i_height
+        #     res = 'base,'+str(0)+','+str(0)+','+str(stepsize)+','
+        #     pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+        #     pos = pendant.Main.client_socket.recv(100).decode()
+        #     if pos == res:
+        #         QtCore.QThread.sleep(1)
+        #     else:
+        #         pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+        #         QtCore.QThread.sleep(1)
+        #     for depth in range(0,grid,stepsize):
+        #         i_dep = -1*i_dep
+        #         res = 'base,'+str(0)+','+str(stepsize*i_height)+','+str(0)+','
+        #         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+        #         pos = pendant.Main.client_socket.recv(100).decode()
+        #         if pos == res:
+        #             QtCore.QThread.sleep(1)
+        #         else:
+        #             pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+        #             QtCore.QThread.sleep(1)
+        #         for width in range(0,grid,stepsize):
+        #             res = 'base,'+str(stepsize*i_dep)+','+str(0)+','+str(0)+','
+        #             pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+        #             pos = pendant.Main.client_socket.recv(100).decode()
+        #             if pos == res:
+        #                 QtCore.QThread.sleep(1)
+        #             else:
+        #                 pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+        #                 QtCore.QThread.sleep(1)
+        x = float(pendant.Main.robot_pos_x.text())
+        y = float(pendant.Main.robot_pos_y.text())
+        z = float(pendant.Main.robot_pos_z.text())
+        # print(x,y,z)
+        for height in range(0, grid, stepsize):
+            for depth in range(0, grid, stepsize):
+                for width in range(0, grid, stepsize):
+                    res = 'auto,' + str(width+x) + ',' + str(depth+y) + ',' + str(height+z) + ','
+                    pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+                    pos = pendant.Main.client_socket.recv(100).decode()
+                    if pos == res:
+                        QtCore.QThread.sleep(1)
+                    else:
+                        pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+                        QtCore.QThread.sleep(1)
+        self.finished.emit(self)
+                        
+        # for height in range(0, grid+1, stepsize):
+        #     for depth in range(0, grid+1, stepsize):
+        #         for width in range(0, grid+1, stepsize):
+        #             res = 'auto,' + str(x + width) + ',' + str(y + depth) + ',' + str(z+height) + ','
+        #             pendant.Main.client_socket.sendall(bytes(res, encoding='utf-8'))
+        #             pos = pendant.Main.client_socket.recv(100).decode()
+        #             if pos == res:
+        #                 QtCore.QThread.sleep(1)
+        #             else:
+        #                 pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+        #                 QtCore.QThread.sleep(1)
+        # self.finished.emit(self)
                 
                 
 if __name__=='__main__':

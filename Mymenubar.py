@@ -1,4 +1,4 @@
-import pendant,os
+import pendant,os,numpy,pickle
 from PyQt5 import QtWidgets
 from MyToolbar import MainToolbar
 def menubar(menubar,widget):
@@ -6,7 +6,7 @@ def menubar(menubar,widget):
     pendant.Main.widget_kinds = widget
     pendant.Main.widget(pendant.Main,'Open','Save','Quit',kinds='action',name='파일',difname='file')
     pendant.Main.widget(pendant.Main,'Open','Save','Quit',kinds='action',name='수정',difname='edit')
-    pendant.Main.widget(pendant.Main,'Pos','Save','Quit',kinds='action',name='연구소',difname='form')
+    pendant.Main.widget(pendant.Main,'Pos','Save','Quit',kinds='action',name='연구소',difname='lab')
     pendant.Main.widget(pendant.Main,'Open','Reset',kinds='action',name='설정',difname='setting')
     pendant.Main.widget(pendant.Main,'Open','Save','Quit',kinds='action',name='윈도우',difname='window')
     pendant.Main.widget(pendant.Main,'Open','Save','Quit',kinds='action',name='Help')
@@ -24,14 +24,24 @@ def edit_Save_def():
 def edit_Quit_def():
     pass
 
-def form_Pos_def():
+def lab_Pos_def():
     pendant.Main.robot_pos_x.setText('1000')
     pendant.Main.robot_pos_y.setText('1000')
     pendant.Main.robot_pos_z.setText('1000')
     
-def form_Save_def():
-    pass
-def form_Quit_def():
+def lab_Save_def():
+    x = pendant.Main.point_name_proc
+    y = pendant.Main.point_list
+    z = numpy.column_stack((x, y))
+    options = pendant.QtWidgets.QFileDialog.Options()
+    options |= pendant.QtWidgets.QFileDialog.DontUseNativeDialog  # native 대화상자 사용 안함
+    file_path, _ = pendant.QtWidgets.QFileDialog.getSaveFileName(None, "Save file", "", "Data Files (*.data)", options=options)
+    with open(f'{file_path}.data','wb') as f:
+        pickle.dump(z,f)
+    # print(file_path)
+    # print(_)
+
+def lab_Quit_def():
     pass
 
 def setting_Open_def():
@@ -41,7 +51,7 @@ def setting_Reset_def():
     if reply == pendant.QtWidgets.QMessageBox.Yes:
         print('초기화')
     else:
-        print('No 버튼이 눌렸습니다.')
+        pass
 
 
 def window_Open_def():

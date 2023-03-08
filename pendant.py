@@ -51,7 +51,8 @@ class Main(QtWidgets.QMainWindow):
         Main.widgets = QtWidgets.QWidget()
         Main.canvas = gl.GLViewWidget()
         self.canvas_grid()
-        
+        Main.Grid_run = False
+        Main.Grid_data = [[]]
         # self.Lab_Mesh()
         # Main.canvas.addItem(ygrid)
         # Main.canvas.addItem(zgrid)
@@ -259,14 +260,34 @@ class Main(QtWidgets.QMainWindow):
         Main.updater.finished.connect(Main.updater.deleteLater)
         Main.updater.start()
     
+    def socket_tread_gridmove(self):
+        Main.Grid_worker = MyThread.Grid_Worker()
+        Main.Grid_worker.finished.connect(Main.on_thread_finished)
+        Main.Grid_worker.finished.connect(Main.Grid_worker.deleteLater)
+        Main.Grid_worker.start()
     
     @QtCore.pyqtSlot(numpy.ndarray)
     def update_data(self, data):
         Main.scatter.setData(pos=data)
-        Main.quad.resetTransform()
-        Main.quad.translate(data[0][0]-75,data[0][1]-75,data[0][2]-75)
+        # Main.quad.resetTransform()
+        # Main.quad.translate(data[0][0]-75,data[0][1]-75,data[0][2]-75)
         res = numpy.append(data,[[0,0,0]],axis=0)
         Main.robot.setData(pos=res)
+    
+        Main.Grid_data.append(data)
+        if len(Main.Grid_data)>2:
+            ress = numpy.append(Main.Grid_data[len(Main.Grid_data)-2],Main.Grid_data[len(Main.Grid_data)-1],axis=0)
+            cloud = gl.GLLinePlotItem(pos=ress, color=(10, 0.0, 0.0, 1.0), width=3, antialias=True)
+            Main.canvas.addItem(cloud)
+        #     #     # scatter = gl.GLScatterPlotItem(pos=data,color=[1,0,0,1])
+        # Main.Grid_data.append(data)
+    
+    @QtCore.pyqtSlot()
+    def on_thread_finished(self):
+        print('Thread finished')
+        Main.Grid_worker.quit()
+        Main.Grid_worker.wait() 
+    
     # @pyqtSlot(bool)
     # def WaitThread(self, bools):
         
@@ -293,12 +314,12 @@ class Main(QtWidgets.QMainWindow):
         Main.scatter = gl.GLScatterPlotItem(color = (255, 0, 0, 255) )
         Main.canvas.addItem(Main.scatter)
         
-        Main.quad = gl.GLBoxItem(color = (255,255,255,255))
-        Main.quad.setSize(150, 150, 150)
-        Main.canvas.addItem(Main.quad)
+        # Main.quad = gl.GLBoxItem(color = (255,255,255,255))
+        # Main.quad.setSize(150, 150, 150)
+        # Main.canvas.addItem(Main.quad)
         
         Main.robot_array = numpy.array([[0, 0, 0], [10, 10, 10]])
-        Main.robot = gl.GLLinePlotItem(pos=Main.robot_array, color=(10, 0.0, 0.0, 1.0), width=30, antialias=True)
+        Main.robot = gl.GLLinePlotItem(pos=Main.robot_array, color=(10, 0.0, 0.0, 1.0), width=7, antialias=True)
         Main.canvas.addItem(Main.robot)
         
         ## grid

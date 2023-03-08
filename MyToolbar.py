@@ -38,10 +38,11 @@ class MainToolbar():
             
     
     def AutoPoints_def(self):
-        grid = int(cGlobal.get_Gridsacale(cGlobal))
-        stepsize = int(cGlobal.get_Stepsize(cGlobal))
+        grid = int(cGlobal.get_Gridsacale(self))
+        stepsize = int(cGlobal.get_Stepsize(self))
         MainToolbar.AutoPoints_visual(MainToolbar,grid,stepsize)
-        # MainToolbar.AutoPoints_move(MainToolbar,grid,stepsize)
+        pendant.Main.Grid_run=True
+        pendant.Main.socket_tread_gridmove(self)
 
     def AutoPoints_visual(self,grid,stepsize):
         lists = []
@@ -49,48 +50,46 @@ class MainToolbar():
         y = float(pendant.Main.robot_pos_y.text())
         z = float(pendant.Main.robot_pos_z.text())
         
-        for height in range(0,grid,stepsize):
-            for depth in range(0,grid,stepsize):
-                for width in range(0,grid,stepsize):
+        for height in range(0,grid+1,stepsize):
+            for depth in range(0,grid+1,stepsize):
+                for width in range(0,grid+1,stepsize):
                     lists.append([width+x,depth+y,height+z])
                     
         scatter = gl.GLScatterPlotItem(pos=lists)
         pendant.Main.canvas.addItem(scatter)
                     
-    def AutoPoints_move(self,grid,stepsize):
-        i_height = -1
-        i_dep = -1
-        
-        
-        for height in range(0,grid,stepsize):
-            i_height = -1*i_height
-            res = 'base,'+str(stepsize)+','+str(0)+','+str(0)+','
-            pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-            pos = pendant.Main.client_socket.recv(100).decode()
-            if pos == res:
-                time.sleep(1)
-            else:
-                pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
-                time.sleep(1)
-            for depth in range(0,grid,stepsize):
-                i_dep = -1*i_dep
-                res = 'base,'+str(0)+','+str(stepsize*i_height)+','+str(0)+','
-                pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-                pos = pendant.Main.client_socket.recv(100).decode()
-                if pos == res:
-                    time.sleep(1)
-                else:
-                    pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
-                    time.sleep(1)
-                for width in range(0,grid,stepsize):
-                    res = 'base,'+str(0)+','+str(0)+','+str(stepsize*i_dep)+','
-                    pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
-                    pos = pendant.Main.client_socket.recv(100).decode()
-                    if pos == res:
-                        time.sleep(1)
-                    else:
-                        pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
-                        time.sleep(1)
+
+        # i_height = -1
+        # i_dep = -1
+        # for height in range(0,grid,stepsize):
+        #     i_height = -1*i_height
+        #     res = 'base,'+str(0)+','+str(0)+','+str(stepsize)+','
+        #     pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+        #     pos = pendant.Main.client_socket.recv(100).decode()
+        #     if pos == res:
+        #         time.sleep(1)
+        #     else:
+        #         pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+        #         time.sleep(1)
+        #     for depth in range(0,grid,stepsize):
+        #         i_dep = -1*i_dep
+        #         res = 'base,'+str(0)+','+str(stepsize*i_height)+','+str(0)+','
+        #         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+        #         pos = pendant.Main.client_socket.recv(100).decode()
+        #         if pos == res:
+        #             time.sleep(1)
+        #         else:
+        #             pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+        #             time.sleep(1)
+        #         for width in range(0,grid,stepsize):
+        #             res = 'base,'+str(stepsize*i_dep)+','+str(0)+','+str(0)+','
+        #             pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
+        #             pos = pendant.Main.client_socket.recv(100).decode()
+        #             if pos == res:
+        #                 time.sleep(1)
+        #             else:
+        #                 pendant.Main.LogBrowser.append('!!!Wrong!!!! ROBOT POSITION')
+        #                 time.sleep(1)
     
     def RunWay_def(self):
         x = []
@@ -118,8 +117,11 @@ class MainToolbar():
         file = QtWidgets.QFileDialog.getOpenFileName()
         if file[0] == '':
             pass
-        else: Visualize.create_obj(pendant.Main,file[0])
-
+        elif 'txt' in file[0]: 
+            Visualize.create_obj(pendant.Main,file[0])
+        elif 'data' in file[0]:
+            Visualize.create_data(pendant.Main,file[0])
+        
     def StepBack_def(self):
         print('1')
     def Pause_def(self):

@@ -1,4 +1,4 @@
-import pendant
+import pendant,pickle
 from MyLog import cTime
 from Mypath import init
 from Myglobal import cGlobal
@@ -107,6 +107,21 @@ class Visualize():
                                               self.point_list[i1][2]]]))
             pendant.Main.canvas.addItem(spl)
             pendant.Main.Right_listwidget.addItem(f'{self.point_name_proc[i1]}')
+            
+    def create_data(self,path):
+        with open(path,'rb') as f:
+            obj = pickle.load(f)
+        print(obj)
+        # for i1 in range(points_num):
+        #     self.point_list.append([float(self.point_pos[i1][0])/cGlobal.get_Resizes(self),
+        #                            float(self.point_pos[i1][1])/cGlobal.get_Resizes(self),
+        #                            float(self.point_pos[i1][2])/cGlobal.get_Resizes(self)])
+            
+        #     spl = gl.GLScatterPlotItem(pos = np.array([[self.point_list[i1][0],
+        #                                       self.point_list[i1][1],
+        #                                       self.point_list[i1][2]]]))
+        #     pendant.Main.canvas.addItem(spl)
+        #     pendant.Main.Right_listwidget.addItem(f'{self.point_name_proc[i1]}')
             
     def create_test(self):
         x = []

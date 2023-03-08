@@ -128,7 +128,6 @@ class left():
     def imove_x_def(self):
         # MyThread.Worker.lab_stop(self)
         cTime.Log_Write(self,'rmove_que True')
-        print(pendant.Main.rline_1.text())
         res = 'base,'+pendant.Main.iline_1.text()+','+'0,'+'0,'
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
         cTime.Log_Write(self,f'Socket Send {res}')
@@ -137,7 +136,6 @@ class left():
     def imove_y_def(self):
         # MyThread.Worker.lab_stop(self)
         cTime.Log_Write(self,'rmove_que True')
-        print(pendant.Main.rline_1.text())
         res = 'base,'+'0,'+pendant.Main.iline_2.text()+','+'0,'
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
         cTime.Log_Write(self,f'Socket Send {res}')
@@ -146,7 +144,6 @@ class left():
     def imove_z_def(self):
         # MyThread.Worker.lab_stop(self)
         cTime.Log_Write(self,'rmove_que True')
-        print(pendant.Main.rline_1.text())
         res = 'base,'+'0,'+'0,'+pendant.Main.iline_3.text()+','
         pendant.Main.client_socket.sendall(bytes(res,encoding='utf-8'))
         cTime.Log_Write(self,f'Socket Send {res}')

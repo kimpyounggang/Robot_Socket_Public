@@ -7,14 +7,15 @@ class cGlobal():
     def __init__(self):
         pass
     def Initailize_System(self):
+        cTime.Log_Write(self,'INITAIL CONFIG')
         config = ConfigParser()
         config['System'] = {}
-        config['System']['host'] = '127.0.0.1'
-        config['System']['port'] = '8080'
+        config['System']['host'] = '192.168.125.1'
+        config['System']['port'] = '12345'
         config['System']['fontsizes'] = '5'
         config['System']['resizes'] = '1'
-        config['System']['gridscale'] = '500'
-        config['System']['stepsize'] = '10'
+        config['System']['gridscale'] = '200'
+        config['System']['stepsize'] = '50'
         with open('System.ini', 'w') as configfile:
             config.write(configfile)
     
